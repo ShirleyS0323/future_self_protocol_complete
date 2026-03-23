@@ -1,0 +1,2642 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FSP">
+<title>Future Self Protocol</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Geist+Mono:wght@300;400;500&family=Noto+Sans+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#fafaf7;--s1:#f4f2ec;--s2:#edeae0;--b1:#dedad0;--b2:#ccc8bc;
+  --ink:#1e1c18;--ink2:#4a4740;--ink3:#8a877e;
+  --v:#6355d8;--r:#d4587a;--g:#2a9d6f;--a:#c47f1a;--e:#c63c3c;--bl:#3b82c4;
+  --serif:'Lora',Georgia,serif;--mono:'Geist Mono',monospace;
+  --rad:10px;--radsm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{font-family:var(--mono);background:var(--bg);color:var(--ink);font-size:13px;line-height:1.6;}
+
+/* RTL */
+[dir="rtl"]{font-family:'Noto Sans Arabic',sans-serif;}
+[dir="rtl"] .sidebar{border-right:none;border-left:1px solid var(--b1);}
+[dir="rtl"] .nav-item{border-left:none;border-right:2px solid transparent;}
+[dir="rtl"] .nav-item.on{border-right-color:var(--v);}
+[dir="rtl"] .nav-item.on.rose{border-right-color:var(--r);}
+[dir="rtl"] .nav-item.on.red{border-right-color:var(--e);}
+[dir="rtl"] .vh-quote{border-left:none;border-right:2px solid rgba(99,85,216,.25);padding-left:0;padding-right:9px;}
+[dir="rtl"] .vh-quote.r{border-right-color:rgba(212,88,122,.25);}
+[dir="rtl"] .le{flex-direction:row-reverse;}
+[dir="rtl"] .fr{flex-direction:row-reverse;}
+[dir="rtl"] .tag{margin-right:0;margin-left:3px;}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;}
+.screen.on{display:flex;}
+
+/* ── LANG SCREEN ── */
+#screen-lang{align-items:center;justify-content:center;padding:2rem;background:var(--bg);}
+.lang-wrap{max-width:400px;width:100%;text-align:center;}
+.lang-logo{font-family:var(--serif);font-size:24px;font-weight:600;margin-bottom:4px;}
+.lang-tagline{font-size:10.5px;color:var(--ink3);margin-bottom:2rem;font-style:italic;}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:1.5rem;}
+.lang-btn{
+  padding:14px 10px;border-radius:var(--rad);
+  border:1px solid var(--b1);background:var(--s1);
+  cursor:pointer;transition:all .15s;text-align:center;
+}
+.lang-btn:hover,.lang-btn.on{border-color:var(--v);background:rgba(99,85,216,.08);}
+.lang-btn-name{font-size:13px;font-weight:500;color:var(--ink);}
+.lang-btn-native{font-size:11px;color:var(--ink3);margin-top:2px;}
+.lang-go{
+  width:100%;padding:13px;border-radius:var(--rad);
+  background:var(--v);color:#fff;font-family:var(--mono);
+  font-size:11px;font-weight:500;letter-spacing:.08em;
+  border:none;cursor:pointer;
+}
+.lang-go:disabled{background:var(--b1);color:var(--ink3);cursor:default;}
+
+/* ── LOGIN SCREEN ── */
+#screen-login{align-items:center;justify-content:center;padding:2rem;background:var(--bg);}
+.login-wrap{max-width:360px;width:100%;}
+.login-logo{font-family:var(--serif);font-size:24px;font-weight:600;text-align:center;margin-bottom:4px;}
+.login-sub{font-size:10.5px;color:var(--ink3);text-align:center;font-style:italic;margin-bottom:2rem;}
+.login-tabs{display:flex;border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:1.25rem;}
+.login-tab{flex:1;padding:9px;text-align:center;font-size:11px;cursor:pointer;background:var(--s1);color:var(--ink3);border:none;font-family:var(--mono);transition:all .12s;}
+.login-tab.on{background:var(--ink);color:var(--bg);}
+.login-form{display:flex;flex-direction:column;gap:9px;margin-bottom:1rem;}
+.login-input{
+  background:var(--bg);border:1px solid var(--b1);border-radius:var(--radsm);
+  color:var(--ink);font-family:var(--mono);font-size:12px;padding:10px 12px;
+  outline:none;transition:border-color .12s;width:100%;
+}
+.login-input:focus{border-color:var(--v);}
+.login-btn{
+  width:100%;padding:12px;border-radius:var(--radsm);
+  background:var(--v);color:#fff;font-family:var(--mono);
+  font-size:11px;font-weight:500;border:none;cursor:pointer;
+  letter-spacing:.06em;transition:background .15s;
+}
+.login-btn:hover{background:#5447c2;}
+.login-divider{text-align:center;font-size:10px;color:var(--ink3);margin:.75rem 0;position:relative;}
+.login-divider::before,.login-divider::after{content:'';position:absolute;top:50%;width:42%;height:0.5px;background:var(--b1);}
+.login-divider::before{left:0;} .login-divider::after{right:0;}
+.google-btn{
+  width:100%;padding:11px 16px;border-radius:var(--radsm);
+  border:1px solid var(--b1);background:var(--s1);
+  cursor:pointer;font-family:var(--mono);font-size:11px;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all .15s;color:var(--ink);
+}
+.google-btn:hover{border-color:var(--v);background:rgba(99,85,216,.06);}
+.login-err{font-size:10.5px;color:var(--e);text-align:center;margin-top:6px;min-height:16px;}
+.login-note{font-size:9px;color:var(--ink3);text-align:center;line-height:1.7;margin-top:1.25rem;}
+.lang-back-btn{background:none;border:none;color:var(--ink3);font-size:10px;font-family:var(--mono);cursor:pointer;display:block;text-align:center;margin-top:.75rem;}
+.lang-back-btn:hover{color:var(--v);}
+
+/* ── SETUP SCREEN ── */
+#screen-setup{align-items:center;justify-content:center;padding:2rem;background:var(--bg);}
+.setup-wrap{max-width:420px;width:100%;}
+.setup-title{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:6px;}
+.setup-sub{font-size:11px;color:var(--ink3);margin-bottom:1.5rem;line-height:1.7;}
+.setup-opt{
+  background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);
+  padding:1rem 1.25rem;margin-bottom:.75rem;cursor:pointer;
+  display:flex;align-items:center;gap:12px;transition:all .15s;
+}
+.setup-opt:hover{border-color:var(--v);}
+.setup-opt.on{border-color:var(--v);background:rgba(99,85,216,.07);}
+.setup-opt-ic{font-size:20px;flex-shrink:0;}
+.setup-opt-title{font-size:12.5px;font-weight:500;}
+.setup-opt-sub{font-size:10px;color:var(--ink3);margin-top:2px;line-height:1.5;}
+.setup-go{
+  width:100%;padding:13px;border-radius:var(--rad);
+  background:var(--v);color:#fff;font-family:var(--mono);
+  font-size:11px;font-weight:500;border:none;cursor:pointer;margin-top:.5rem;
+}
+
+/* ── APP ── */
+#screen-app{flex-direction:column;}
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.sidebar-header{padding:1.1rem 1rem .9rem;border-bottom:1px solid var(--b1);}
+.app-name{font-family:var(--serif);font-size:15px;font-weight:600;}
+.app-sub{font-size:9px;color:var(--ink3);letter-spacing:.06em;margin-top:2px;font-style:italic;}
+.user-row{display:flex;align-items:center;gap:7px;margin-top:.6rem;padding-top:.6rem;border-top:0.5px solid var(--b1);}
+.user-avatar{width:22px;height:22px;border-radius:50%;background:var(--v);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.user-email{font-size:9px;color:var(--ink3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.signout-btn{background:none;border:none;font-size:9px;color:var(--ink3);cursor:pointer;padding:2px 4px;border-radius:3px;}
+.signout-btn:hover{color:var(--e);}
+
+.nav-group{padding:.65rem 0;border-bottom:1px solid var(--b1);}
+.nav-group:last-child{border-bottom:none;}
+.nav-group-label{font-size:7.5px;color:var(--ink3);letter-spacing:.16em;text-transform:uppercase;padding:0 1rem;margin-bottom:3px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:6px 1rem;font-size:11.5px;color:var(--ink2);cursor:pointer;border-left:2px solid transparent;transition:all .12s;}
+.nav-item:hover{color:var(--ink);background:var(--s2);}
+.nav-item.on{color:var(--v);border-left-color:var(--v);background:rgba(99,85,216,.06);font-weight:500;}
+.nav-item.on.rose{color:var(--r);border-left-color:var(--r);background:rgba(212,88,122,.06);}
+.nav-item.on.red{color:var(--e);border-left-color:var(--e);background:rgba(198,60,60,.06);}
+.nav-ic{font-size:13px;width:17px;text-align:center;flex-shrink:0;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.view{display:none;padding:2rem;max-width:720px;animation:fu .17s ease;}
+.view.on{display:block;}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION HEADERS */
+.vh{margin-bottom:1.5rem;}
+.vh-title{font-family:var(--serif);font-size:22px;font-weight:600;}
+.vh-sub{font-size:10.5px;color:var(--ink3);margin-top:4px;line-height:1.7;}
+.vh-quote{margin-top:9px;font-size:10.5px;color:var(--v);font-family:var(--serif);font-style:italic;border-left:2px solid rgba(99,85,216,.25);padding-left:9px;}
+.vh-quote.r{color:var(--r);border-left-color:rgba(212,88,122,.25);}
+.vh-quote.e{color:var(--e);border-left-color:rgba(198,60,60,.25);}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:1.1rem 1.25rem;margin-bottom:.85rem;}
+.card-lbl{font-size:8.5px;color:var(--ink3);letter-spacing:.13em;text-transform:uppercase;margin-bottom:.85rem;}
+
+/* FORMS */
+.fr{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:9px;align-items:flex-end;}
+.fg{display:flex;flex-direction:column;gap:3px;flex:1;min-width:90px;}
+.fg.w2{flex:2;}.fg.w3{flex:3;}
+.fl{font-size:8.5px;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;}
+input[type=text],input[type=date],input[type=time],input[type=number],
+input[type=email],input[type=password],input[type=datetime-local],select,textarea{
+  background:var(--bg);border:1px solid var(--b1);border-radius:var(--radsm);
+  color:var(--ink);font-family:var(--mono);font-size:11.5px;
+  padding:7px 10px;outline:none;transition:border-color .12s;width:100%;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--v);}
+textarea{resize:vertical;min-height:60px;}
+
+/* BUTTONS */
+.btn{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px;border-radius:var(--radsm);cursor:pointer;border:1px solid var(--b1);background:transparent;color:var(--ink2);transition:all .12s;}
+.btn:hover{border-color:var(--ink2);color:var(--ink);}
+.bpri{background:var(--v);border-color:var(--v);color:#fff;}
+.bpri:hover{background:#5447c2;border-color:#5447c2;}
+.brose{background:var(--r);border-color:var(--r);color:#fff;}
+.bdel{border-color:rgba(198,60,60,.3);color:var(--e);background:rgba(198,60,60,.04);font-size:9px;padding:3px 10px;}
+.bdel:hover{background:rgba(198,60,60,.1);}
+
+/* STATS */
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:1rem;}
+.sc{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:.85rem 1rem;text-align:center;}
+.sn{font-family:var(--serif);font-size:26px;color:var(--v);}
+.sn.r{color:var(--r);}.sn.g{color:var(--g);}.sn.a{color:var(--a);}.sn.e{color:var(--e);}
+.sl{font-size:8.5px;color:var(--ink3);margin-top:2px;}
+
+/* LOG ENTRIES */
+.ll{display:flex;flex-direction:column;gap:6px;}
+.le{background:var(--s1);border:1px solid var(--b1);border-radius:var(--radsm);padding:10px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.le-meta{font-size:8.5px;color:var(--ink3);margin-bottom:3px;}
+.le-body{font-size:11.5px;}
+.le-note{font-size:10px;color:var(--ink2);margin-top:3px;font-style:italic;font-family:var(--serif);}
+
+/* TAGS */
+.tag{display:inline-block;font-size:8px;font-weight:500;padding:2px 7px;border-radius:3px;letter-spacing:.07em;text-transform:uppercase;margin-right:3px;margin-bottom:2px;}
+.tv{background:rgba(99,85,216,.1);color:var(--v);border:1px solid rgba(99,85,216,.2);}
+.tr{background:rgba(212,88,122,.1);color:var(--r);border:1px solid rgba(212,88,122,.2);}
+.tg{background:rgba(42,157,111,.1);color:var(--g);border:1px solid rgba(42,157,111,.2);}
+.ta{background:rgba(196,127,26,.1);color:var(--a);border:1px solid rgba(196,127,26,.2);}
+.te{background:rgba(198,60,60,.1);color:var(--e);border:1px solid rgba(198,60,60,.2);}
+.tbl{background:rgba(59,130,196,.1);color:var(--bl);border:1px solid rgba(59,130,196,.2);}
+.tn{background:var(--s2);color:var(--ink2);border:1px solid var(--b1);}
+
+/* EMPTY */
+.empty{text-align:center;color:var(--ink3);font-size:11px;padding:2.5rem 0;font-style:italic;font-family:var(--serif);}
+
+/* CYCLE CALENDAR */
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-month-lbl{font-family:var(--serif);font-size:15px;font-weight:500;}
+.cal-navbtn{background:none;border:1px solid var(--b1);border-radius:5px;padding:3px 10px;cursor:pointer;font-size:12px;color:var(--ink2);}
+.cal-dows{display:grid;grid-template-columns:repeat(7,1fr);}
+.cal-dow{text-align:center;font-size:8.5px;color:var(--ink3);padding:4px 0;}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:10.5px;cursor:pointer;background:var(--s1);border:1px solid transparent;transition:all .1s;color:var(--ink3);position:relative;}
+.cday:hover{border-color:var(--b1);color:var(--ink);}
+.cday.today{border-color:var(--v);color:var(--v);font-weight:500;}
+.cday.period{background:rgba(212,88,122,.14);color:var(--r);border-color:rgba(212,88,122,.3);font-weight:500;}
+.cday.pred{background:rgba(212,88,122,.04);border:1px dashed rgba(212,88,122,.25);color:rgba(212,88,122,.5);}
+.cday.blank{background:transparent;border:none;cursor:default;}
+.cday-dot{position:absolute;bottom:2px;width:4px;height:4px;border-radius:50%;}
+.leg-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1rem;}
+.leg{display:flex;align-items:center;gap:5px;font-size:8.5px;color:var(--ink2);}
+.leg-box{width:10px;height:10px;border-radius:2px;}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0;}
+.chip{padding:5px 12px;border-radius:99px;font-size:10px;border:1px solid var(--b1);background:var(--bg);cursor:pointer;transition:all .12s;color:var(--ink2);font-family:var(--mono);}
+.chip:hover{border-color:var(--v);color:var(--v);}
+.chip.on{background:var(--v);border-color:var(--v);color:#fff;}
+.chip.rose:hover{border-color:var(--r);color:var(--r);}
+.chip.rose.on{background:var(--r);border-color:var(--r);color:#fff;}
+
+/* YN / SCALE */
+.yn{display:flex;gap:6px;}
+.ynb{flex:1;padding:8px;border-radius:var(--radsm);border:1px solid var(--b1);background:var(--bg);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .12s;color:var(--ink);}
+.ynb.y{background:rgba(42,157,111,.1);border-color:var(--g);color:var(--g);}
+.ynb.n{background:rgba(198,60,60,.08);border-color:var(--e);color:var(--e);}
+.scale{display:flex;gap:4px;}
+.scb{flex:1;padding:7px 2px;border-radius:5px;border:1px solid var(--b1);background:var(--bg);font-family:var(--mono);font-size:10px;text-align:center;cursor:pointer;transition:all .12s;color:var(--ink3);}
+.scb.on{background:var(--v);border-color:var(--v);color:#fff;}
+
+/* NUM CONTROL */
+.numrow{display:flex;align-items:center;gap:10px;}
+.numbtn{width:30px;height:30px;border-radius:50%;border:1px solid var(--b1);background:var(--bg);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;color:var(--ink);}
+.numval{font-family:var(--serif);font-size:20px;min-width:32px;text-align:center;}
+.numunit{font-size:10px;color:var(--ink3);}
+
+/* TC CHIPS */
+.tc-row{display:flex;gap:5px;flex-wrap:wrap;}
+.tcbtn{padding:5px 11px;border-radius:5px;font-size:10px;border:1px solid var(--b1);background:var(--bg);cursor:pointer;transition:all .12s;font-family:var(--mono);color:var(--ink2);}
+.tcbtn.on{background:rgba(99,85,216,.1);border-color:var(--v);color:var(--v);}
+
+/* SCHEDULE GRID */
+.sg{display:grid;grid-template-columns:60px repeat(7,1fr);gap:1px;background:var(--b1);border-radius:8px;overflow:hidden;margin-bottom:.9rem;}
+.sgc{background:var(--s1);padding:6px 4px;font-size:8.5px;min-height:42px;}
+.sgh{background:var(--s2);color:var(--ink3);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:7px 3px;min-height:auto;}
+.sgev{font-size:8px;padding:2px 4px;border-radius:2px;margin-top:2px;border-left:2px solid;line-height:1.4;word-break:break-all;cursor:default;}
+.sgev.gen{border-color:var(--v);color:var(--v);background:rgba(99,85,216,.06);}
+.sgev.food{border-color:var(--a);color:var(--a);background:rgba(196,127,26,.05);}
+.sgev.sleep{border-color:var(--r);color:var(--r);background:rgba(212,88,122,.05);}
+.sgev.work{border-color:var(--g);color:var(--g);background:rgba(42,157,111,.05);}
+
+/* FOOD GRID */
+.fgrid{display:grid;grid-template-columns:50px repeat(4,1fr);gap:1px;background:var(--b1);border-radius:8px;overflow:hidden;margin-bottom:.9rem;}
+.fgc{background:var(--s1);padding:6px 5px;font-size:9px;}
+.fgh{background:var(--s2);color:var(--ink3);font-size:7.5px;text-align:center;padding:6px 3px;}
+.fgval{color:var(--a);}
+
+/* THREAT METER */
+.threat-row{display:flex;gap:3px;margin:5px 0;}
+.tblock{width:14px;height:3px;border-radius:1px;background:var(--b1);}
+.tblock.on{background:var(--e);}
+
+/* TIMER */
+.timer-big{font-family:var(--serif);font-size:56px;font-weight:400;color:var(--v);letter-spacing:.02em;text-align:center;padding:1.5rem 0 .25rem;font-variant-numeric:tabular-nums;}
+.timer-lbl{font-size:9px;color:var(--ink3);text-align:center;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.1rem;}
+.progwrap{height:2px;background:var(--b1);border-radius:1px;overflow:hidden;margin:.5rem 0 1.4rem;}
+.progbar{height:100%;background:var(--v);transition:width 1s linear;border-radius:1px;}
+
+/* ADHD */
+.adhd-mtoggle{display:flex;border:1px solid var(--b1);border-radius:99px;overflow:hidden;margin-bottom:1.1rem;width:fit-content;}
+.adhd-mtb{padding:5px 14px;background:transparent;border:none;cursor:pointer;font-family:var(--mono);font-size:10px;color:var(--ink3);transition:all .12s;}
+.adhd-mtb.on{background:var(--ink);color:var(--bg);}
+
+/* DASH */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.dash-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:1.1rem;}
+.dash-card-title{font-size:9px;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem;display:flex;align-items:center;gap:6px;}
+.dash-dot{width:5px;height:5px;border-radius:50%;background:var(--v);}
+.mini-bars{display:flex;align-items:flex-end;gap:3px;height:40px;}
+
+/* LANG SWITCHER */
+.lang-switcher{position:relative;}
+.lang-current{background:none;border:1px solid var(--b1);border-radius:5px;padding:3px 9px;font-family:var(--mono);font-size:10px;color:var(--ink2);cursor:pointer;}
+.lang-current:hover{border-color:var(--v);color:var(--v);}
+.lang-dropdown{position:absolute;top:calc(100%+4px);right:0;background:var(--bg);border:1px solid var(--b1);border-radius:var(--radsm);overflow:hidden;z-index:200;min-width:130px;display:none;}
+.lang-dropdown.on{display:block;}
+.lang-dd-item{padding:8px 12px;font-size:11px;cursor:pointer;color:var(--ink2);font-family:var(--mono);}
+.lang-dd-item:hover{background:var(--s1);color:var(--v);}
+.lang-dd-item.on{color:var(--v);font-weight:500;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:99px;font-size:11px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+
+/* MOBILE */
+@media(max-width:640px){
+  .sidebar{display:none;}
+  .app{flex-direction:column;}
+  .main{flex:1;overflow-y:auto;padding-bottom:70px;}
+  .mobile-nav{display:flex;border-top:1px solid var(--b1);background:var(--s1);position:fixed;bottom:0;left:0;right:0;z-index:50;padding-bottom:env(safe-area-inset-bottom);}
+  .mobile-nav-btn{flex:1;padding:10px 4px 8px;text-align:center;font-size:8px;color:var(--ink3);cursor:pointer;border:none;background:transparent;font-family:var(--mono);transition:color .12s;}
+  .mobile-nav-btn .mnic{font-size:20px;display:block;margin-bottom:2px;}
+  .mobile-nav-btn.on{color:var(--v);}
+  .view{padding:1.25rem 1rem;}
+  .dash-grid{grid-template-columns:1fr;}
+}
+@media(min-width:641px){.mobile-nav{display:none;}}
+
+/* DRAWER */
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;backdrop-filter:blur(2px);}
+.drawer-overlay.on{display:block;}
+.drawer{position:fixed;bottom:0;left:0;right:0;z-index:101;background:var(--bg);border-radius:20px 20px 0 0;padding:1rem 1.25rem 2rem;transform:translateY(100%);transition:transform .25s ease;max-height:85vh;overflow-y:auto;}
+.drawer.on{transform:translateY(0);}
+.drawer-handle{width:36px;height:4px;border-radius:2px;background:var(--b1);margin:0 auto 1.25rem;}
+.drawer-title{font-family:var(--serif);font-size:15px;font-weight:600;margin-bottom:1.1rem;}
+.drawer-section{margin-bottom:1rem;}
+.drawer-section-label{font-size:8.5px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;}
+.drawer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.drawer-item{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px;border-radius:var(--rad);background:var(--s1);border:1px solid var(--b1);cursor:pointer;transition:all .12s;text-align:center;}
+.drawer-item:hover,.drawer-item:active{border-color:var(--v);background:rgba(99,85,216,.06);}
+.drawer-item.rose:hover,.drawer-item.rose:active{border-color:var(--r);background:rgba(212,88,122,.06);}
+.drawer-item.red:hover,.drawer-item.red:active{border-color:var(--e);background:rgba(198,60,60,.06);}
+.drawer-item-ic{font-size:22px;}
+.drawer-item-label{font-size:9.5px;color:var(--ink2);font-family:var(--mono);line-height:1.3;}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ LANG SELECTION ══ -->
+<div class="screen" id="screen-lang">
+  <div class="lang-wrap">
+    <div class="lang-logo">Future Self Protocol</div>
+    <div class="lang-tagline">Choose your language · 选择语言 · Choisissez la langue · اختر لغتك · زبان را انتخاب کنید</div>
+    <div class="lang-grid">
+      <div class="lang-btn" onclick="selectLang('zh')" id="lb-zh">
+        <div class="lang-btn-name">中文</div>
+        <div class="lang-btn-native">简体中文</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('en')" id="lb-en">
+        <div class="lang-btn-name">English</div>
+        <div class="lang-btn-native">English</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('fr')" id="lb-fr">
+        <div class="lang-btn-name">Français</div>
+        <div class="lang-btn-native">Français</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('ar')" id="lb-ar">
+        <div class="lang-btn-name">العربية</div>
+        <div class="lang-btn-native">Arabic</div>
+      </div>
+      <div class="lang-btn" onclick="selectLang('fa')" id="lb-fa">
+        <div class="lang-btn-name">فارسی</div>
+        <div class="lang-btn-native">Persian</div>
+      </div>
+    </div>
+    <button class="lang-go" id="lang-go-btn" disabled onclick="goToLogin()">Continue →</button>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div class="screen" id="screen-login">
+  <div class="login-wrap">
+    <div class="login-logo">Future Self Protocol</div>
+    <div class="login-sub" id="login-tagline">延迟满足 · 写给未来的自己</div>
+
+    <div class="login-tabs">
+      <button class="login-tab on" id="tab-signin" onclick="switchLoginTab('signin')" data-i18n="signin">登录</button>
+      <button class="login-tab" id="tab-signup" onclick="switchLoginTab('signup')" data-i18n="signup">注册</button>
+    </div>
+
+    <div class="login-form">
+      <input class="login-input" type="email" id="login-email" placeholder="email@example.com">
+      <input class="login-input" type="password" id="login-pw" placeholder="••••••••" data-i18n-ph="password">
+      <input class="login-input" type="password" id="login-pw2" placeholder="••••••••" style="display:none" data-i18n-ph="confirmPassword">
+    </div>
+    <button class="login-btn" id="login-action-btn" onclick="doEmailAuth()">
+      <span data-i18n="signin">登录</span>
+    </button>
+    <div class="login-err" id="login-err"></div>
+
+    <div class="login-divider"><span data-i18n="or">或</span></div>
+
+    <button class="google-btn" onclick="doGoogleLogin()">
+      <svg class="google-ic" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span data-i18n="continueGoogle">使用 Google 继续</span>
+    </button>
+
+    <div class="login-note" data-i18n="loginNote">你的数据加密存储在云端，只有你能访问。</div>
+    <button class="lang-back-btn" onclick="backToLang()" data-i18n="changeLang">← 更改语言</button>
+  </div>
+</div>
+
+<!-- ══ SETUP (first time) ══ -->
+<div class="screen" id="screen-setup">
+  <div class="setup-wrap">
+    <div class="setup-title" data-i18n="setupTitle">设置你的追踪模块</div>
+    <div class="setup-sub" data-i18n="setupSub">选择你想记录的内容。随时可以在设置里更改。</div>
+
+    <div class="setup-opt on" id="setup-core" onclick="toggleSetupOpt('core')">
+      <div class="setup-opt-ic">◈</div>
+      <div>
+        <div class="setup-opt-title" data-i18n="coreModules">核心模块</div>
+        <div class="setup-opt-sub" data-i18n="coreModulesSub">经期、排便、睡眠、情绪、专注、仇人清单（必选）</div>
+      </div>
+    </div>
+
+    <div class="setup-opt" id="setup-adhd" onclick="toggleSetupOpt('adhd')">
+      <div class="setup-opt-ic">⚡</div>
+      <div>
+        <div class="setup-opt-title" data-i18n="adhdModule">ADHD 日志</div>
+        <div class="setup-opt-sub" data-i18n="adhdModuleSub">基于 Barkley 框架的执行功能追踪。如果你有 ADHD 或怀疑自己有，选这个。</div>
+      </div>
+    </div>
+
+    <div class="setup-opt" id="setup-schedule" onclick="toggleSetupOpt('schedule')">
+      <div class="setup-opt-ic">▦</div>
+      <div>
+        <div class="setup-opt-title" data-i18n="scheduleModule">周作息 + 饮食时间表</div>
+        <div class="setup-opt-sub" data-i18n="scheduleModuleSub">Sheldon 式的固定化生活协议。</div>
+      </div>
+    </div>
+
+    <button class="setup-go" onclick="finishSetup()" data-i18n="startTracking">开始记录 →</button>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div class="screen" id="screen-app">
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="app-name">Future Self Protocol</div>
+    <div class="app-sub" data-i18n="tagline">延迟满足 · 写给未来的自己</div>
+    <div class="user-row">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-email" id="user-email-display"></div>
+      <button class="signout-btn" onclick="doSignOut()" data-i18n="signOut">退出</button>
+    </div>
+  </div>
+
+  <div style="padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;">
+    <div style="font-size:9px;color:var(--ink3);" data-i18n="language">语言</div>
+    <div class="lang-switcher">
+      <button class="lang-current" id="lang-current-btn" onclick="toggleLangDropdown()">中文 ▾</button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <div class="lang-dd-item" onclick="changeLang('zh')">中文</div>
+        <div class="lang-dd-item" onclick="changeLang('en')">English</div>
+        <div class="lang-dd-item" onclick="changeLang('fr')">Français</div>
+        <div class="lang-dd-item" onclick="changeLang('ar')">العربية</div>
+        <div class="lang-dd-item" onclick="changeLang('fa')">فارسی</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label" data-i18n="overview">总览</div>
+    <div class="nav-item on" onclick="goto('dashboard')"><div class="nav-ic">◈</div><span data-i18n="dashboard">仪表盘</span></div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label" data-i18n="health">健康</div>
+    <div class="nav-item" onclick="goto('cycle')"><div class="nav-ic">🌸</div><span data-i18n="cycleTracker">经期记录</span></div>
+    <div class="nav-item" onclick="goto('poop')"><div class="nav-ic">💧</div><span data-i18n="bowelLog">排便日志</span></div>
+    <div class="nav-item" onclick="goto('sleep')"><div class="nav-ic">🌙</div><span data-i18n="sleepLog">睡眠记录</span></div>
+    <div class="nav-item" onclick="goto('mood')"><div class="nav-ic">☁</div><span data-i18n="moodLog">情绪日志</span></div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label" data-i18n="productivity">效率</div>
+    <div class="nav-item nav-adhd" onclick="goto('adhd')"><div class="nav-ic">⚡</div><span data-i18n="adhdLog">ADHD日志</span></div>
+    <div class="nav-item" onclick="goto('focus')"><div class="nav-ic">◎</div><span data-i18n="focusTimer">专注计时</span></div>
+    <div class="nav-item nav-schedule" onclick="goto('schedule')"><div class="nav-ic">▦</div><span data-i18n="weeklySchedule">周作息表</span></div>
+    <div class="nav-item nav-schedule" onclick="goto('food')"><div class="nav-ic">🍽</div><span data-i18n="mealPlan">饮食时间表</span></div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label" data-i18n="archive">档案</div>
+    <div class="nav-item" onclick="goto('enemy')"><div class="nav-ic">⚔</div><span data-i18n="enemyList">仇人清单</span></div>
+    <div class="nav-item" onclick="goto('offense')"><div class="nav-ic">📁</div><span data-i18n="offenseArchive">冒犯存档</span></div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label" data-i18n="system">系统</div>
+    <div class="nav-item" onclick="goto('settings')"><div class="nav-ic">⚙</div><span data-i18n="settings">设置</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main" id="main-content">
+
+<!-- DASHBOARD -->
+<div class="view on" id="v-dashboard">
+  <div class="vh">
+    <div class="vh-title" data-i18n="todayOverview">今日概览</div>
+    <div class="vh-sub" id="dash-datestr"></div>
+  </div>
+  <div class="sr" id="dash-stats"></div>
+  <div class="dash-grid" id="dash-grid"></div>
+</div>
+
+<!-- CYCLE -->
+<div class="view" id="v-cycle">
+  <div class="vh">
+    <div class="vh-title" data-i18n="cycleTracker">经期记录</div>
+    <div class="vh-sub" data-i18n="cycleSub">追踪月经周期、症状与身体变化。数据越多，预测越准确。</div>
+    <div class="vh-quote r" data-i18n="cycleQuote">"了解自己的身体，是最基础的自主权。"</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="calendarView">// 日历视图</div>
+    <div class="leg-row">
+      <div class="leg"><div class="leg-box" style="background:rgba(212,88,122,.3)"></div><span data-i18n="period">经期</span></div>
+      <div class="leg"><div class="leg-box" style="background:rgba(212,88,122,.1);border:1px dashed rgba(212,88,122,.4)"></div><span data-i18n="predicted">预测</span></div>
+    </div>
+    <div class="cal-nav-row">
+      <div class="cal-month-lbl" id="cycle-month-lbl"></div>
+      <div><button class="cal-navbtn" onclick="cycleCalNav(-1)">‹</button> <button class="cal-navbtn" onclick="cycleCalNav(1)">›</button></div>
+    </div>
+    <div class="cal-dows" id="cycle-cal-dows"></div>
+    <div class="cal-days" id="cycle-cal"></div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="logToday">// 记录今日</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="date">日期</div><input type="date" id="cy-date"></div>
+      <div class="fg"><div class="fl" data-i18n="type">类型</div>
+        <select id="cy-type">
+          <option value="period" data-i18n="period">经期</option>
+          <option value="spotting" data-i18n="spotting">点滴出血</option>
+          <option value="ovulation" data-i18n="ovulation">排卵感</option>
+          <option value="pms" data-i18n="pms">PMS症状</option>
+        </select>
+      </div>
+      <div class="fg"><div class="fl" data-i18n="flow">流量</div>
+        <select id="cy-flow">
+          <option value="">—</option>
+          <option value="light" data-i18n="light">少量</option>
+          <option value="medium" data-i18n="medium">中等</option>
+          <option value="heavy" data-i18n="heavy">较多</option>
+          <option value="very_heavy" data-i18n="veryHeavy">非常多</option>
+        </select>
+      </div>
+    </div>
+    <div class="fl" style="margin-bottom:6px;" data-i18n="symptoms">症状</div>
+    <div class="chips" id="cy-symptoms"></div>
+    <div class="fg" style="margin:9px 0;"><div class="fl" data-i18n="notes">备注</div><textarea id="cy-note" rows="2"></textarea></div>
+    <button class="btn brose" onclick="addCycle()" data-i18n="saveEntry">保存记录</button>
+  </div>
+  <div class="sr" id="cycle-stats"></div>
+  <div class="ll" id="cycle-list"></div>
+</div>
+
+<!-- POOP -->
+<div class="view" id="v-poop">
+  <div class="vh">
+    <div class="vh-title" data-i18n="bowelLog">排便日志</div>
+    <div class="vh-sub" data-i18n="bowelSub">基于布里斯托粪便分类法。消化健康是系统运作的基础数据。</div>
+    <div class="vh-quote" data-i18n="bowelQuote">"高纤维星期五下午1:45，可选跟进排便。" — Sheldon</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="newEntry">// 新增记录</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="date">日期</div><input type="date" id="po-date"></div>
+      <div class="fg"><div class="fl" data-i18n="time">时间</div><input type="time" id="po-time"></div>
+      <div class="fg w2"><div class="fl" data-i18n="bristolType">布里斯托类型</div>
+        <select id="po-type" data-i18n-options="bristolTypes"></select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="color">颜色</div>
+        <select id="po-color" data-i18n-options="poopColors"></select>
+      </div>
+      <div class="fg"><div class="fl" data-i18n="duration">时长</div>
+        <select id="po-dur" data-i18n-options="poopDurations"></select>
+      </div>
+      <div class="fg"><div class="fl" data-i18n="effort">用力</div>
+        <select id="po-effort" data-i18n-options="poopEfforts"></select>
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:9px;"><div class="fl" data-i18n="notes">备注</div><textarea id="po-note" rows="2"></textarea></div>
+    <button class="btn bpri" onclick="addPoop()" data-i18n="saveEntry">保存记录</button>
+  </div>
+  <div class="sr" id="poop-stats"></div>
+  <div class="ll" id="poop-list"></div>
+</div>
+
+<!-- SLEEP -->
+<div class="view" id="v-sleep">
+  <div class="vh">
+    <div class="vh-title" data-i18n="sleepLog">睡眠记录</div>
+    <div class="vh-sub" data-i18n="sleepSub">追踪睡眠时长与质量，确保认知系统以最优状态运行。</div>
+    <div class="vh-quote" data-i18n="sleepQuote">"每晚9点睡，6点起。9小时。非商量性条款。"</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="logYesternight">// 记录昨晚</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="date">日期</div><input type="date" id="sl-date"></div>
+      <div class="fg"><div class="fl" data-i18n="bedtime">入睡时间</div><input type="time" id="sl-sleep" value="22:30"></div>
+      <div class="fg"><div class="fl" data-i18n="wakeTime">起床时间</div><input type="time" id="sl-wake" value="06:30"></div>
+      <div class="fg"><div class="fl" data-i18n="quality">质量 1–5</div>
+        <select id="sl-quality" data-i18n-options="sleepQualities"></select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="disruptions">干扰因素</div><input type="text" id="sl-disruption"></div>
+    </div>
+    <button class="btn bpri" onclick="addSleep()" data-i18n="saveEntry">保存记录</button>
+  </div>
+  <div class="sr" id="sleep-stats"></div>
+  <div class="ll" id="sleep-list"></div>
+</div>
+
+<!-- MOOD -->
+<div class="view" id="v-mood">
+  <div class="vh">
+    <div class="vh-title" data-i18n="moodLog">情绪日志</div>
+    <div class="vh-sub" data-i18n="moodSub">将主观情绪转化为客观数据，识别触发模式。</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="logNow">// 记录当前</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="timestamp">时间戳</div><input type="datetime-local" id="mo-time"></div>
+      <div class="fg"><div class="fl" data-i18n="stressLevel">压力等级 1–10</div><input type="number" id="mo-stress" min="1" max="10" value="5"></div>
+    </div>
+    <div class="fl" style="margin-bottom:6px;" data-i18n="moodState">情绪状态</div>
+    <div class="chips" id="mood-chips"></div>
+    <div class="fr" style="margin-top:9px;">
+      <div class="fg w2"><div class="fl" data-i18n="trigger">触发事件</div><input type="text" id="mo-trigger"></div>
+    </div>
+    <button class="btn bpri" onclick="addMood()" data-i18n="saveEntry">保存记录</button>
+  </div>
+  <div class="sr" id="mood-stats"></div>
+  <div class="ll" id="mood-list"></div>
+</div>
+
+<!-- ADHD -->
+<div class="view" id="v-adhd">
+  <div class="vh">
+    <div class="vh-title" data-i18n="adhdLog">ADHD 日志</div>
+    <div class="vh-sub" data-i18n="adhdSub">基于 Barkley 执行功能框架。每天2–5分钟，追踪真正重要的维度。</div>
+  </div>
+  <div class="adhd-mtoggle">
+    <button class="adhd-mtb on" id="adhd-simple-btn" onclick="setAdhdMode('simple')" data-i18n="simpleMode">简单 30秒</button>
+    <button class="adhd-mtb" id="adhd-full-btn" onclick="setAdhdMode('full')" data-i18n="fullMode">详细 3分钟</button>
+  </div>
+  <div id="adhd-simple">
+    <div class="card">
+      <div class="fl" style="margin-bottom:6px;" data-i18n="anchorTask">今天的锚点任务完成了吗？</div>
+      <div class="yn">
+        <button class="ynb" onclick="adhdYN(this,'anchor','yes')" data-i18n="completed">✓ 完成了</button>
+        <button class="ynb" onclick="adhdYN(this,'anchor','no')" data-i18n="notCompleted">✗ 没完成</button>
+        <button class="ynb" onclick="adhdYN(this,'anchor','na')" data-i18n="notSet">— 没设定</button>
+      </div>
+      <div class="fl" style="margin:1rem 0 6px;" data-i18n="energyScale">整体精力 1–10</div>
+      <div class="scale" id="adhd-energy-s">
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',1)">1</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',2)">2</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',3)">3</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',4)">4</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',5)">5</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',6)">6</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',7)">7</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',8)">8</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',9)">9</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-s','adhd_energy',10)">10</button>
+      </div>
+      <div class="fl" style="margin:1rem 0 6px;" data-i18n="brainFog">脑雾</div>
+      <div class="yn">
+        <button class="ynb" onclick="adhdYN(this,'brainfog','yes')" data-i18n="appeared">出现了</button>
+        <button class="ynb" onclick="adhdYN(this,'brainfog','no')" data-i18n="didntAppear">没有</button>
+      </div>
+    </div>
+    <button class="btn bpri" style="width:100%;" onclick="addAdhd()" data-i18n="saveTodayLog">保存今日记录</button>
+  </div>
+  <div id="adhd-full" style="display:none">
+    <div class="card">
+      <div class="card-lbl" data-i18n="executiveFunction">// 执行功能</div>
+      <div style="margin-bottom:1rem;">
+        <div class="fl" style="margin-bottom:6px;" data-i18n="anchorTask">锚点任务完成了吗？</div>
+        <div class="yn">
+          <button class="ynb" onclick="adhdYN(this,'anchor','yes')" data-i18n="completed">✓ 完成</button>
+          <button class="ynb" onclick="adhdYN(this,'anchor','no')" data-i18n="notCompleted">✗ 未完成</button>
+          <button class="ynb" onclick="adhdYN(this,'anchor','na')" data-i18n="notSet">— 未设定</button>
+        </div>
+      </div>
+      <div class="fl" style="margin-bottom:6px;" data-i18n="startTime">启动任务用了多久？</div>
+      <div class="tc-row">
+        <button class="tcbtn" onclick="tcSelect(this,'start_time','instant')" data-i18n="immediately">立刻开始</button>
+        <button class="tcbtn" onclick="tcSelect(this,'start_time','30min')" data-i18n="within30">30分钟内</button>
+        <button class="tcbtn" onclick="tcSelect(this,'start_time','1hr')" data-i18n="over1hr">超过1小时</button>
+        <button class="tcbtn" onclick="tcSelect(this,'start_time','never')" data-i18n="neverStarted">根本没开始</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-lbl" data-i18n="bodyState">// 身体状态</div>
+      <div class="fr">
+        <div class="fg"><div class="fl" data-i18n="sleepHours">睡了几小时</div>
+          <div class="numrow"><button class="numbtn" onclick="numAdj('adhd_sleep',-0.5)">−</button><div class="numval" id="nv-adhd_sleep">7</div><div class="numunit">h</div><button class="numbtn" onclick="numAdj('adhd_sleep',0.5)">+</button></div>
+        </div>
+        <div class="fg"><div class="fl" data-i18n="meals">吃了几顿</div>
+          <div class="numrow"><button class="numbtn" onclick="numAdj('adhd_meals',-1)">−</button><div class="numval" id="nv-adhd_meals">3</div><div class="numunit" data-i18n="mealsUnit">顿</div><button class="numbtn" onclick="numAdj('adhd_meals',1)">+</button></div>
+        </div>
+        <div class="fg"><div class="fl" data-i18n="exercise">运动了吗</div>
+          <div class="yn" style="margin-top:4px;">
+            <button class="ynb" onclick="adhdYN(this,'exercise','yes')">✓</button>
+            <button class="ynb" onclick="adhdYN(this,'exercise','no')">✗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-lbl" data-i18n="energyState">// 能量状态</div>
+      <div style="margin-bottom:1rem;">
+        <div class="fl" style="margin-bottom:6px;" data-i18n="brainFogWhen">脑雾出现了吗？几点？</div>
+        <div class="chips" id="adhd-fog-chips"></div>
+      </div>
+      <div class="fl" style="margin-bottom:6px;" data-i18n="energyScale">整体精力 1–10</div>
+      <div class="scale" id="adhd-energy-f">
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',1)">1</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',2)">2</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',3)">3</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',4)">4</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',5)">5</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',6)">6</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',7)">7</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',8)">8</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',9)">9</button>
+        <button class="scb" onclick="scaleSelectId('adhd-energy-f','adhd_energy',10)">10</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-lbl" data-i18n="rsdTitle">// 情绪调节（RSD）</div>
+      <div class="fl" style="margin-bottom:6px;" data-i18n="rsdQuestion">今天对批评或忽视产生了强烈情绪反应吗？</div>
+      <div class="yn">
+        <button class="ynb" onclick="adhdYN(this,'rsd','yes')" data-i18n="yes">有</button>
+        <button class="ynb" onclick="adhdYN(this,'rsd','no')" data-i18n="no">没有</button>
+      </div>
+      <div id="rsd-q" style="display:none;margin-top:9px;">
+        <div class="fl" style="margin-bottom:4px;" data-i18n="rsdTrigger">触发情境</div>
+        <textarea id="adhd-rsd-note" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-lbl" data-i18n="dailyReview">// 今日复盘</div>
+      <div style="margin-bottom:9px;"><div class="fl" style="margin-bottom:4px;" data-i18n="biggestObstacle">今天最大的障碍</div><textarea id="adhd-obstacle" rows="2"></textarea></div>
+      <div><div class="fl" style="margin-bottom:4px;" data-i18n="tomorrowAdjust">明天一个具体调整</div><textarea id="adhd-adjust" rows="2"></textarea></div>
+    </div>
+    <button class="btn bpri" style="width:100%;" onclick="addAdhd()" data-i18n="saveTodayLog">保存今日记录</button>
+  </div>
+  <div class="sr" id="adhd-stats" style="margin-top:1rem;"></div>
+  <div class="ll" id="adhd-list" style="margin-top:.5rem;"></div>
+</div>
+
+<!-- FOCUS -->
+<div class="view" id="v-focus">
+  <div class="vh">
+    <div class="vh-title" data-i18n="focusTimer">专注计时</div>
+    <div class="vh-sub" data-i18n="focusSub">固定休息协议。认知输出最大化。</div>
+  </div>
+  <div class="card" style="text-align:center;">
+    <div class="card-lbl" id="focus-state-lbl">// 待机</div>
+    <div class="timer-big" id="timer-display">25:00</div>
+    <div class="progwrap"><div class="progbar" id="progbar" style="width:0%"></div></div>
+    <div class="timer-lbl" id="timer-mode-lbl"></div>
+    <div style="display:flex;justify-content:center;gap:7px;margin-bottom:.9rem;">
+      <button class="btn" onclick="setTimerMode('focus')" data-i18n="focus25">专注 25m</button>
+      <button class="btn" onclick="setTimerMode('short')" data-i18n="short5">短休 5m</button>
+      <button class="btn" onclick="setTimerMode('long')" data-i18n="long20">长休 20m</button>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;">
+      <button class="btn bpri" id="timer-start-btn" onclick="toggleTimer()" data-i18n="start">开始</button>
+      <button class="btn" onclick="resetTimer()" data-i18n="reset">重置</button>
+    </div>
+  </div>
+  <div class="sr" id="focus-stats"></div>
+  <div class="ll" id="focus-list"></div>
+</div>
+
+<!-- SCHEDULE -->
+<div class="view" id="v-schedule">
+  <div class="vh">
+    <div class="vh-title" data-i18n="weeklySchedule">周作息时间表</div>
+    <div class="vh-quote" data-i18n="scheduleQuote">"周六晚8:15是洗衣时间。这是宇宙常数。"</div>
+  </div>
+  <div class="card" id="schedule-grid-card"></div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="addItem">// 添加事项</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="weekday">星期</div><select id="sch-day" data-i18n-options="weekdays"></select></div>
+      <div class="fg"><div class="fl" data-i18n="timeSlot">时间段</div><select id="sch-slot" data-i18n-options="timeSlots"></select></div>
+      <div class="fg"><div class="fl" data-i18n="type">类型</div>
+        <select id="sch-type">
+          <option value="gen" data-i18n="general">通用</option>
+          <option value="food" data-i18n="mealPlan">饮食</option>
+          <option value="sleep" data-i18n="sleepLog">睡眠</option>
+          <option value="work" data-i18n="work">工作</option>
+        </select>
+      </div>
+      <div class="fg w2"><div class="fl" data-i18n="itemName">事项名称</div><input type="text" id="sch-name"></div>
+    </div>
+    <button class="btn bpri" onclick="addSchedule()" data-i18n="add">添加</button>
+  </div>
+</div>
+
+<!-- FOOD -->
+<div class="view" id="v-food">
+  <div class="vh">
+    <div class="vh-title" data-i18n="mealPlan">饮食时间表</div>
+    <div class="vh-quote" data-i18n="foodQuote">"周四晚餐是印度菜。这不是偏好，这是协议。"</div>
+  </div>
+  <div class="card" id="food-grid-card"></div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="setMeal">// 设置固定餐食</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="weekday">星期</div><select id="fo-day" data-i18n-options="weekdays"></select></div>
+      <div class="fg"><div class="fl" data-i18n="mealTime">餐次</div><select id="fo-meal" data-i18n-options="mealTimes"></select></div>
+      <div class="fg w2"><div class="fl" data-i18n="content">内容</div><input type="text" id="fo-content"></div>
+    </div>
+    <button class="btn bpri" onclick="addFood()" data-i18n="writeProtocol">写入协议</button>
+  </div>
+</div>
+
+<!-- ENEMY -->
+<div class="view" id="v-enemy">
+  <div class="vh">
+    <div class="vh-title" data-i18n="enemyList">仇人清单</div>
+    <div class="vh-sub" data-i18n="enemySub">系统化管理人际冒犯。将愤怒转化为可归档的数据资产。</div>
+    <div class="vh-quote e" data-i18n="enemyQuote">"仇恨需要证据支持。" — Sheldon Cooper</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="registerEnemy">// 登记新仇人</div>
+    <div class="fr">
+      <div class="fg w2"><div class="fl" data-i18n="nameAlias">姓名/代号</div><input type="text" id="en-name"></div>
+      <div class="fg"><div class="fl" data-i18n="relation">关系</div><select id="en-rel" data-i18n-options="relations"></select></div>
+      <div class="fg"><div class="fl" data-i18n="threatLevel">威胁等级</div><select id="en-threat" data-i18n-options="threatLevels"></select></div>
+    </div>
+    <div class="fg" style="margin-bottom:9px;"><div class="fl" data-i18n="offenseReason">冒犯事由</div><textarea id="en-reason" rows="2"></textarea></div>
+    <div class="fg" style="margin-bottom:9px;"><div class="fl" data-i18n="revengeplan">报复计划</div><textarea id="en-plan" rows="2"></textarea></div>
+    <button class="btn" style="border-color:rgba(198,60,60,.4);color:var(--e);" onclick="addEnemy()" data-i18n="fileToArchive">存入档案</button>
+  </div>
+  <div class="sr" id="enemy-stats"></div>
+  <div class="ll" id="enemy-list"></div>
+</div>
+
+<!-- OFFENSE -->
+<div class="view" id="v-offense">
+  <div class="vh">
+    <div class="vh-title" data-i18n="offenseArchive">冒犯事件存档</div>
+    <div class="vh-quote e" data-i18n="offenseQuote">"Penny又坐了我的位置。这是本月第三次，记录在案。"</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="archiveEvent">// 存档新事件</div>
+    <div class="fr">
+      <div class="fg"><div class="fl" data-i18n="date">日期</div><input type="date" id="of-date"></div>
+      <div class="fg w2"><div class="fl" data-i18n="offender">冒犯者</div><input type="text" id="of-who"></div>
+      <div class="fg"><div class="fl" data-i18n="severity">严重程度</div><select id="of-level" data-i18n-options="severityLevels"></select></div>
+    </div>
+    <div class="fg" style="margin-bottom:9px;"><div class="fl" data-i18n="eventDesc">事件描述</div><textarea id="of-desc" rows="2"></textarea></div>
+    <button class="btn" style="border-color:rgba(198,60,60,.4);color:var(--e);" onclick="addOffense()" data-i18n="fileToArchive">存入档案</button>
+  </div>
+  <div class="sr" id="offense-stats"></div>
+  <div class="ll" id="offense-list"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="view" id="v-settings">
+  <div class="vh">
+    <div class="vh-title" data-i18n="settings">设置</div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="modules">// 功能模块</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:0.5px solid var(--b1);margin-bottom:.5rem;">
+      <div>
+        <div style="font-size:12px;font-weight:500;" data-i18n="adhdModule">ADHD 日志</div>
+        <div style="font-size:10px;color:var(--ink3);" data-i18n="adhdModuleSub">基于 Barkley 框架的执行功能追踪</div>
+      </div>
+      <button class="btn" id="adhd-toggle-btn" onclick="toggleAdhdModule()" style="min-width:60px;"></button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;">
+      <div>
+        <div style="font-size:12px;font-weight:500;" data-i18n="scheduleModule">周作息 + 饮食</div>
+        <div style="font-size:10px;color:var(--ink3);" data-i18n="scheduleModuleSub">Sheldon 式固定化生活协议</div>
+      </div>
+      <button class="btn" id="schedule-toggle-btn" onclick="toggleScheduleModule()" style="min-width:60px;"></button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-lbl" data-i18n="account">// 账户</div>
+    <div style="font-size:11px;color:var(--ink2);margin-bottom:.75rem;" id="settings-email"></div>
+    <button class="btn" onclick="doSignOut()" data-i18n="signOut">退出登录</button>
+  </div>
+  <div style="font-size:9px;color:var(--ink3);text-align:center;margin-top:1rem;line-height:1.8;">
+    Future Self Protocol<br>
+    <span data-i18n="privacyNote">数据加密存储在 Firebase，只有你能访问</span>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title" data-i18n="allModules">所有功能</div>
+  <div class="drawer-section">
+    <div class="drawer-section-label" data-i18n="health">健康追踪</div>
+    <div class="drawer-grid">
+      <div class="drawer-item rose" onclick="drawerGoto('cycle')"><div class="drawer-item-ic">🌸</div><div class="drawer-item-label" data-i18n="cycleTracker">经期记录</div></div>
+      <div class="drawer-item" onclick="drawerGoto('poop')"><div class="drawer-item-ic">💧</div><div class="drawer-item-label" data-i18n="bowelLog">排便日志</div></div>
+      <div class="drawer-item" onclick="drawerGoto('sleep')"><div class="drawer-item-ic">🌙</div><div class="drawer-item-label" data-i18n="sleepLog">睡眠记录</div></div>
+      <div class="drawer-item" onclick="drawerGoto('mood')"><div class="drawer-item-ic">☁️</div><div class="drawer-item-label" data-i18n="moodLog">情绪日志</div></div>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-label" data-i18n="productivity">效率系统</div>
+    <div class="drawer-grid" id="drawer-productivity-grid">
+      <div class="drawer-item drawer-adhd" onclick="drawerGoto('adhd')"><div class="drawer-item-ic">⚡</div><div class="drawer-item-label" data-i18n="adhdLog">ADHD日志</div></div>
+      <div class="drawer-item" onclick="drawerGoto('focus')"><div class="drawer-item-ic">◎</div><div class="drawer-item-label" data-i18n="focusTimer">专注计时</div></div>
+      <div class="drawer-item drawer-schedule" onclick="drawerGoto('schedule')"><div class="drawer-item-ic">▦</div><div class="drawer-item-label" data-i18n="weeklySchedule">周作息表</div></div>
+      <div class="drawer-item drawer-schedule" onclick="drawerGoto('food')"><div class="drawer-item-ic">🍽</div><div class="drawer-item-label" data-i18n="mealPlan">饮食时间表</div></div>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-label" data-i18n="archive">情报档案</div>
+    <div class="drawer-grid">
+      <div class="drawer-item red" onclick="drawerGoto('enemy')"><div class="drawer-item-ic">⚔️</div><div class="drawer-item-label" data-i18n="enemyList">仇人清单</div></div>
+      <div class="drawer-item red" onclick="drawerGoto('offense')"><div class="drawer-item-ic">📁</div><div class="drawer-item-label" data-i18n="offenseArchive">冒犯存档</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <button class="mobile-nav-btn on" onclick="goto('dashboard')"><span class="mnic">◈</span><span data-i18n="home">首页</span></button>
+  <button class="mobile-nav-btn" onclick="goto('cycle')"><span class="mnic">🌸</span><span data-i18n="cycle">经期</span></button>
+  <button class="mobile-nav-btn nav-adhd-btn" onclick="goto('adhd')"><span class="mnic">⚡</span>ADHD</button>
+  <button class="mobile-nav-btn" onclick="openDrawer()"><span class="mnic">⊞</span><span data-i18n="more">更多</span></button>
+  <button class="mobile-nav-btn" onclick="goto('settings')"><span class="mnic">⚙</span><span data-i18n="settings">设置</span></button>
+</div>
+
+</div><!-- /app -->
+</div><!-- /screen-app -->
+
+<script type="module">
+// ══════════════════════════════════
+// FIREBASE INIT
+// ══════════════════════════════════
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import {
+  getAuth, onAuthStateChanged, signOut,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  GoogleAuthProvider, signInWithPopup
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import {
+  getFirestore, doc, collection, addDoc, deleteDoc,
+  getDoc, getDocs, setDoc, query, orderBy
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDGp7-pzYPsW4ZG0aI8G0n9xeIdeAtxFQc",
+  authDomain: "future-self-protocol.firebaseapp.com",
+  projectId: "future-self-protocol",
+  storageBucket: "future-self-protocol.firebasestorage.app",
+  messagingSenderId: "777263007916",
+  appId: "1:777263007916:web:e2e89ada82f9257ff73709",
+  measurementId: "G-PHGHQYK5CL"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const GoogleProvider = new GoogleAuthProvider();
+
+// expose to window
+window._auth = auth;
+window._db = db;
+window._GoogleProvider = GoogleProvider;
+window._signInWithPopup = signInWithPopup;
+window._signOut = () => signOut(auth);
+window._onAuthStateChanged = (a, cb) => onAuthStateChanged(a, cb);
+window._doc = doc;
+window._collection = collection;
+window._addDoc = addDoc;
+window._deleteDoc = deleteDoc;
+window._getDocs = getDocs;
+window._getDoc = getDoc;
+window._setDoc = setDoc;
+
+// ══════════════════════════════════
+// i18n TRANSLATIONS
+// ══════════════════════════════════
+const T = {
+  zh: {
+    // nav
+    overview:'总览', health:'健康', productivity:'效率', archive:'档案', system:'系统',
+    dashboard:'仪表盘', cycleTracker:'经期记录', bowelLog:'排便日志', sleepLog:'睡眠记录',
+    moodLog:'情绪日志', adhdLog:'ADHD日志', focusTimer:'专注计时', weeklySchedule:'周作息表',
+    mealPlan:'饮食时间表', enemyList:'仇人清单', offenseArchive:'冒犯存档', settings:'设置',
+    // auth
+    signin:'登录', signup:'注册', signOut:'退出', or:'或',
+    continueGoogle:'使用 Google 继续',
+    loginNote:'你的数据加密存储在云端，只有你能访问。',
+    changeLang:'← 更改语言',
+    // app
+    tagline:'延迟满足 · 写给未来的自己',
+    language:'语言',
+    todayOverview:'今日概览',
+    allModules:'所有功能',
+    home:'首页', cycle:'经期', more:'更多',
+    // setup
+    setupTitle:'设置你的追踪模块', setupSub:'选择你想记录的内容。随时可以在设置里更改。',
+    coreModules:'核心模块', coreModulesSub:'经期、排便、睡眠、情绪、专注、仇人清单（必选）',
+    adhdModule:'ADHD 日志', adhdModuleSub:'基于 Barkley 框架的执行功能追踪。如果你有 ADHD 或怀疑自己有，选这个。',
+    scheduleModule:'周作息 + 饮食时间表', scheduleModuleSub:'Sheldon 式的固定化生活协议。',
+    startTracking:'开始记录 →',
+    // common
+    date:'日期', time:'时间', type:'类型', notes:'备注', saveEntry:'保存记录',
+    newEntry:'// 新增记录', logToday:'// 记录今日', logNow:'// 记录当前',
+    calendarView:'// 日历视图', logYesternight:'// 记录昨晚',
+    // cycle
+    cycleSub:'追踪月经周期、症状与身体变化。数据越多，预测越准确。',
+    cycleQuote:'"了解自己的身体，是最基础的自主权。"',
+    period:'经期', spotting:'点滴出血', ovulation:'排卵感', pms:'PMS症状',
+    flow:'流量', light:'少量', medium:'中等', heavy:'较多', veryHeavy:'非常多',
+    predicted:'预测',
+    symptoms:'症状',
+    cycleSymptoms:['痛经','腹胀','头痛','腰痛','情绪波动','疲劳','痘痘','胸部敏感','失眠','食欲变化'],
+    cycleSymptomKeys:['cramps','bloating','headache','backache','mood_swing','fatigue','acne','breast_tender','insomnia','appetite'],
+    // poop
+    bowelSub:'基于布里斯托粪便分类法。消化健康是系统运作的基础数据。',
+    bowelQuote:'"高纤维星期五下午1:45，可选跟进排便。" — Sheldon',
+    bristolType:'布里斯托类型', color:'颜色', duration:'时长', effort:'用力',
+    bristolTypes:['1型 — 分裂硬块','2型 — 腊肠块状','3型 — 香肠有裂','4型 — 完美香肠 ✓','5型 — 柔软团块','6型 — 糊状','7型 — 水状'],
+    poopColors:['棕色（正常）','深棕色','黄色','绿色','黑色 ⚠','红色 ⚠'],
+    poopDurations:['<2分钟（理想）','2–5分钟','5–10分钟','>10分钟'],
+    poopEfforts:['无需用力','轻微','中度','高度'],
+    // sleep
+    sleepSub:'追踪睡眠时长与质量，确保认知系统以最优状态运行。',
+    sleepQuote:'"每晚9点睡，6点起。9小时。非商量性条款。"',
+    bedtime:'入睡时间', wakeTime:'起床时间', quality:'质量 1–5', disruptions:'干扰因素',
+    sleepQualities:['5 — 完全恢复','4 — 较好','3 — 一般','2 — 差','1 — 极差'],
+    // mood
+    moodSub:'将主观情绪转化为客观数据，识别触发模式。',
+    timestamp:'时间戳', stressLevel:'压力等级 1–10', moodState:'情绪状态', trigger:'触发事件',
+    moodChips:['😌 平静','😊 开心','😐 中性','😤 烦躁','😠 愤怒','😰 焦虑','😔 悲伤','😴 疲劳','🤩 亢奋'],
+    moodKeys:['calm','happy','neutral','irritable','angry','anxious','sad','tired','excited'],
+    // adhd
+    adhdSub:'基于 Barkley 执行功能框架。每天2–5分钟，追踪真正重要的维度。',
+    simpleMode:'简单 30秒', fullMode:'详细 3分钟',
+    anchorTask:'今天的锚点任务完成了吗？',
+    completed:'✓ 完成了', notCompleted:'✗ 没完成', notSet:'— 没设定',
+    energyScale:'整体精力 1–10', brainFog:'脑雾', appeared:'出现了', didntAppear:'没有',
+    saveTodayLog:'保存今日记录',
+    executiveFunction:'// 执行功能', startTime:'启动任务用了多久？',
+    immediately:'立刻开始', within30:'30分钟内', over1hr:'超过1小时', neverStarted:'根本没开始',
+    bodyState:'// 身体状态', sleepHours:'睡了几小时', meals:'吃了几顿', mealsUnit:'顿', exercise:'运动了吗',
+    energyState:'// 能量状态', brainFogWhen:'脑雾出现了吗？几点？',
+    fogChips:['没有','上午','下午','晚上','全天'], fogKeys:['none','morning','afternoon','evening','allday'],
+    rsdTitle:'// 情绪调节（RSD）', rsdQuestion:'今天对批评或忽视产生了强烈情绪反应吗？',
+    yes:'有', no:'没有', rsdTrigger:'触发情境',
+    dailyReview:'// 今日复盘', biggestObstacle:'今天最大的障碍', tomorrowAdjust:'明天一个具体调整',
+    // focus
+    focusSub:'固定休息协议。认知输出最大化。',
+    focus25:'专注 25m', short5:'短休 5m', long20:'长休 20m',
+    start:'开始', reset:'重置', focusing:'专注中', resting:'休息中', idle:'待机', done:'完成',
+    focusMode:'专注模式 · 25分钟', shortMode:'短暂休息 · 5分钟', longMode:'长休息 · 20分钟',
+    // schedule
+    scheduleQuote:'"周六晚8:15是洗衣时间。这是宇宙常数。"',
+    addItem:'// 添加事项', weekday:'星期', timeSlot:'时间段', itemName:'事项名称', add:'添加',
+    weekdays:['周一','周二','周三','周四','周五','周六','周日'],
+    timeSlots:['早晨 06–09','上午 09–12','下午 12–18','晚上 18–22','睡前 22–00'],
+    general:'通用', work:'工作',
+    // food
+    foodQuote:'"周四晚餐是印度菜。这不是偏好，这是协议。"',
+    setMeal:'// 设置固定餐食', mealTime:'餐次', content:'内容', writeProtocol:'写入协议',
+    mealTimes:['早餐','午餐','晚餐','加餐'],
+    // enemy
+    enemySub:'系统化管理人际冒犯。将愤怒转化为可归档的数据资产。',
+    enemyQuote:'"仇恨需要证据支持。" — Sheldon Cooper',
+    registerEnemy:'// 登记新仇人', nameAlias:'姓名/代号', relation:'关系',
+    threatLevel:'威胁等级', offenseReason:'冒犯事由', revengeplan:'报复计划', fileToArchive:'存入档案',
+    relations:['同事','邻居','朋友','家人','陌生人','前任'],
+    threatLevels:['1 — 轻微烦人','2 — 令人不快','3 — 真正的敌人','4 — 宿敌','5 — 终极威胁'],
+    // offense
+    offenseQuote:'"Penny又坐了我的位置。这是本月第三次，记录在案。"',
+    archiveEvent:'// 存档新事件', offender:'冒犯者', severity:'严重程度', eventDesc:'事件描述',
+    severityLevels:['1 — 轻微','2 — 一般','3 — 明显','4 — 严重'],
+    // settings
+    modules:'// 功能模块', account:'// 账户',
+    privacyNote:'数据加密存储在 Firebase，只有你能访问',
+    // stats labels
+    totalRecords:'总记录', periodDays:'经期天数', crampsCount:'痛经次数',
+    avgType:'平均类型', perfectBowel:'完美排便', recordDays:'记录天数',
+    avgDuration:'平均时长', avgQuality:'平均质量',
+    totalEntries:'记录次数', avgStress:'平均压力',
+    anchorRate:'锚点完成率', avgEnergy:'平均精力', rsdDays:'RSD天数',
+    todaySessions:'今日会话', todayMinutes:'今日专注分钟', totalSessions:'累计会话',
+    activeEnemies:'在档仇人', maxThreat:'最高威胁', highRisk:'高危级别',
+    archivedEvents:'存档事件', peopleInvolved:'涉及人数', mostFrequent:'最高频',
+  },
+  en: {
+    overview:'Overview', health:'Health', productivity:'Productivity', archive:'Archive', system:'System',
+    dashboard:'Dashboard', cycleTracker:'Cycle Tracker', bowelLog:'Bowel Log', sleepLog:'Sleep Log',
+    moodLog:'Mood Log', adhdLog:'ADHD Log', focusTimer:'Focus Timer', weeklySchedule:'Weekly Schedule',
+    mealPlan:'Meal Plan', enemyList:'Enemy List', offenseArchive:'Offense Archive', settings:'Settings',
+    signin:'Sign In', signup:'Sign Up', signOut:'Sign Out', or:'or',
+    continueGoogle:'Continue with Google',
+    loginNote:'Your data is encrypted and stored securely. Only you can access it.',
+    changeLang:'← Change Language',
+    tagline:'Delayed gratification · A letter to your future self',
+    language:'Language',
+    todayOverview:"Today's Overview",
+    allModules:'All Modules',
+    home:'Home', cycle:'Cycle', more:'More',
+    setupTitle:'Set up your tracking modules', setupSub:'Choose what you want to track. You can change this anytime in Settings.',
+    coreModules:'Core Modules', coreModulesSub:'Cycle, bowel, sleep, mood, focus, enemy list (required)',
+    adhdModule:'ADHD Log', adhdModuleSub:'Executive function tracking based on the Barkley framework. Select if you have or suspect ADHD.',
+    scheduleModule:'Weekly Schedule + Meal Plan', scheduleModuleSub:'Sheldon-style fixed life protocols.',
+    startTracking:'Start Tracking →',
+    date:'Date', time:'Time', type:'Type', notes:'Notes', saveEntry:'Save Entry',
+    newEntry:'// New Entry', logToday:'// Log Today', logNow:'// Log Now',
+    calendarView:'// Calendar View', logYesternight:'// Log Last Night',
+    cycleSub:'Track your menstrual cycle, symptoms and physical changes. More data means better predictions.',
+    cycleQuote:'"Understanding your body is the most basic form of autonomy."',
+    period:'Period', spotting:'Spotting', ovulation:'Ovulation', pms:'PMS',
+    flow:'Flow', light:'Light', medium:'Medium', heavy:'Heavy', veryHeavy:'Very Heavy',
+    predicted:'Predicted',
+    symptoms:'Symptoms',
+    cycleSymptoms:['Cramps','Bloating','Headache','Back pain','Mood swings','Fatigue','Acne','Breast tenderness','Insomnia','Appetite change'],
+    cycleSymptomKeys:['cramps','bloating','headache','backache','mood_swing','fatigue','acne','breast_tender','insomnia','appetite'],
+    bowelSub:"Based on the Bristol Stool Scale. Digestive health is the foundation of your system's data.",
+    bowelQuote:'"High-fiber Friday: optional follow-up bowel movement at 1:45pm." — Sheldon',
+    bristolType:'Bristol Type', color:'Color', duration:'Duration', effort:'Effort',
+    bristolTypes:['Type 1 — Separate hard lumps','Type 2 — Sausage-shaped, lumpy','Type 3 — Like a sausage with cracks','Type 4 — Like a sausage, smooth ✓','Type 5 — Soft blobs','Type 6 — Mushy','Type 7 — Watery'],
+    poopColors:['Brown (normal)','Dark brown','Yellow','Green','Black ⚠','Red ⚠'],
+    poopDurations:['<2 min (ideal)','2–5 min','5–10 min','>10 min'],
+    poopEfforts:['No effort','Slight','Moderate','High'],
+    sleepSub:'Track sleep duration and quality to ensure your cognitive system runs optimally.',
+    sleepQuote:'"Bed at 9pm, wake at 6am. 9 hours. Non-negotiable."',
+    bedtime:'Bedtime', wakeTime:'Wake time', quality:'Quality 1–5', disruptions:'Disruptions',
+    sleepQualities:['5 — Fully restored','4 — Good','3 — Average','2 — Poor','1 — Very poor'],
+    moodSub:'Convert subjective emotions into objective data. Identify trigger patterns.',
+    timestamp:'Timestamp', stressLevel:'Stress Level 1–10', moodState:'Mood State', trigger:'Trigger',
+    moodChips:['😌 Calm','😊 Happy','😐 Neutral','😤 Irritable','😠 Angry','😰 Anxious','😔 Sad','😴 Tired','🤩 Excited'],
+    moodKeys:['calm','happy','neutral','irritable','angry','anxious','sad','tired','excited'],
+    adhdSub:'Based on the Barkley Executive Function Framework. 2–5 minutes daily to track what truly matters.',
+    simpleMode:'Simple 30s', fullMode:'Detailed 3min',
+    anchorTask:'Did you complete your anchor task today?',
+    completed:'✓ Done', notCompleted:'✗ Not done', notSet:'— Not set',
+    energyScale:'Overall energy 1–10', brainFog:'Brain fog', appeared:'Yes', didntAppear:'No',
+    saveTodayLog:"Save Today's Log",
+    executiveFunction:'// Executive Function', startTime:'How long to start your main task?',
+    immediately:'Started immediately', within30:'Within 30 min', over1hr:'Over 1 hour', neverStarted:'Never started',
+    bodyState:'// Body State', sleepHours:'Hours slept', meals:'Meals eaten', mealsUnit:'meals', exercise:'Exercised?',
+    energyState:'// Energy State', brainFogWhen:'Did brain fog appear? When?',
+    fogChips:['None','Morning','Afternoon','Evening','All day'], fogKeys:['none','morning','afternoon','evening','allday'],
+    rsdTitle:'// Emotional Regulation (RSD)', rsdQuestion:'Did you have an intense emotional reaction to criticism or rejection today?',
+    yes:'Yes', no:'No', rsdTrigger:'Trigger context',
+    dailyReview:'// Daily Review', biggestObstacle:"Today's biggest obstacle", tomorrowAdjust:'One adjustment for tomorrow',
+    focusSub:'Fixed rest protocol. Maximize cognitive output.',
+    focus25:'Focus 25m', short5:'Short break 5m', long20:'Long break 20m',
+    start:'Start', reset:'Reset', focusing:'Focusing', resting:'Resting', idle:'Idle', done:'Done',
+    focusMode:'Focus Mode · 25 minutes', shortMode:'Short Break · 5 minutes', longMode:'Long Break · 20 minutes',
+    scheduleQuote:'"Saturday at 8:15pm is laundry night. This is a universal constant."',
+    addItem:'// Add Item', weekday:'Day', timeSlot:'Time Slot', itemName:'Item Name', add:'Add',
+    weekdays:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    timeSlots:['Morning 06–09','Late morning 09–12','Afternoon 12–18','Evening 18–22','Bedtime 22–00'],
+    general:'General', work:'Work',
+    foodQuote:'"Thursday dinner is Indian food. This is not a preference, it is a protocol."',
+    setMeal:'// Set Fixed Meal', mealTime:'Meal', content:'Content', writeProtocol:'Write Protocol',
+    mealTimes:['Breakfast','Lunch','Dinner','Snack'],
+    enemySub:'Systematically manage interpersonal offenses. Transform anger into archivable data.',
+    enemyQuote:'"Hatred requires evidence." — Sheldon Cooper',
+    registerEnemy:'// Register New Enemy', nameAlias:'Name/Alias', relation:'Relation',
+    threatLevel:'Threat Level', offenseReason:'Offense Reason', revengeplan:'Revenge Plan', fileToArchive:'File to Archive',
+    relations:['Colleague','Neighbor','Friend','Family','Stranger','Ex'],
+    threatLevels:['1 — Mildly annoying','2 — Unpleasant','3 — Genuine enemy','4 — Nemesis','5 — Ultimate threat'],
+    offenseQuote:'"Penny sat in my spot again. Third time this month. Noted."',
+    archiveEvent:'// Archive New Event', offender:'Offender', severity:'Severity', eventDesc:'Event Description',
+    severityLevels:['1 — Minor','2 — Moderate','3 — Significant','4 — Severe'],
+    modules:'// Modules', account:'// Account',
+    privacyNote:'Data is encrypted and stored in Firebase. Only you can access it.',
+    totalRecords:'Total Records', periodDays:'Period Days', crampsCount:'Cramps',
+    avgType:'Avg Type', perfectBowel:'Perfect Bowel', recordDays:'Days Logged',
+    avgDuration:'Avg Duration', avgQuality:'Avg Quality',
+    totalEntries:'Total Entries', avgStress:'Avg Stress',
+    anchorRate:'Anchor Rate', avgEnergy:'Avg Energy', rsdDays:'RSD Days',
+    todaySessions:"Today's Sessions", todayMinutes:"Today's Focus (min)", totalSessions:'Total Sessions',
+    activeEnemies:'Active Enemies', maxThreat:'Max Threat', highRisk:'High Risk',
+    archivedEvents:'Archived Events', peopleInvolved:'People Involved', mostFrequent:'Most Frequent',
+  },
+  fr: {
+    overview:'Aperçu', health:'Santé', productivity:'Productivité', archive:'Archives', system:'Système',
+    dashboard:'Tableau de bord', cycleTracker:'Suivi du cycle', bowelLog:'Journal intestinal', sleepLog:'Journal du sommeil',
+    moodLog:"Journal d'humeur", adhdLog:'Journal TDAH', focusTimer:'Minuteur de focus', weeklySchedule:'Planning hebdo',
+    mealPlan:'Plan alimentaire', enemyList:"Liste d'ennemis", offenseArchive:'Archive des offenses', settings:'Paramètres',
+    signin:'Connexion', signup:'Inscription', signOut:'Déconnexion', or:'ou',
+    continueGoogle:'Continuer avec Google',
+    loginNote:'Vos données sont chiffrées et stockées en toute sécurité. Seul vous pouvez y accéder.',
+    changeLang:'← Changer de langue',
+    tagline:'Gratification différée · Une lettre à soi futur',
+    language:'Langue',
+    todayOverview:"Aperçu d'aujourd'hui",
+    allModules:'Tous les modules',
+    home:'Accueil', cycle:'Cycle', more:'Plus',
+    setupTitle:'Configurer vos modules', setupSub:'Choisissez ce que vous souhaitez suivre. Modifiable à tout moment.',
+    coreModules:'Modules de base', coreModulesSub:'Cycle, intestin, sommeil, humeur, focus, liste ennemis (requis)',
+    adhdModule:'Journal TDAH', adhdModuleSub:'Suivi des fonctions exécutives basé sur le cadre Barkley.',
+    scheduleModule:'Planning + Plan alimentaire', scheduleModuleSub:'Protocoles de vie fixes à la Sheldon.',
+    startTracking:'Commencer →',
+    date:'Date', time:'Heure', type:'Type', notes:'Notes', saveEntry:'Enregistrer',
+    newEntry:'// Nouvelle entrée', logToday:"// Enregistrer aujourd'hui", logNow:'// Enregistrer maintenant',
+    calendarView:'// Vue calendrier', logYesternight:'// Nuit dernière',
+    cycleSub:'Suivez votre cycle menstruel, vos symptômes et changements physiques.',
+    cycleQuote:'"Comprendre son corps est la forme la plus fondamentale d\'autonomie."',
+    period:'Règles', spotting:'Pertes', ovulation:'Ovulation', pms:'SPM',
+    flow:'Flux', light:'Léger', medium:'Moyen', heavy:'Abondant', veryHeavy:'Très abondant',
+    predicted:'Prévu',
+    symptoms:'Symptômes',
+    cycleSymptoms:['Crampes','Ballonnements','Maux de tête','Mal de dos','Sautes d\'humeur','Fatigue','Acné','Seins sensibles','Insomnie','Changement d\'appétit'],
+    cycleSymptomKeys:['cramps','bloating','headache','backache','mood_swing','fatigue','acne','breast_tender','insomnia','appetite'],
+    bowelSub:'Basé sur l\'échelle de Bristol. La santé digestive est la base de vos données.',
+    bowelQuote:'"Vendredi à haute teneur en fibres : défécation de suivi optionnelle à 13h45." — Sheldon',
+    bristolType:'Type Bristol', color:'Couleur', duration:'Durée', effort:'Effort',
+    bristolTypes:['Type 1 — Grumeaux séparés','Type 2 — Forme de saucisse, grumeleuse','Type 3 — Comme une saucisse avec des craquelures','Type 4 — Comme une saucisse, lisse ✓','Type 5 — Morceaux mous','Type 6 — Pâteux','Type 7 — Liquide'],
+    poopColors:['Brun (normal)','Brun foncé','Jaune','Vert','Noir ⚠','Rouge ⚠'],
+    poopDurations:['<2 min (idéal)','2–5 min','5–10 min','>10 min'],
+    poopEfforts:['Sans effort','Léger','Modéré','Important'],
+    sleepSub:'Suivez la durée et la qualité du sommeil pour optimiser vos performances cognitives.',
+    sleepQuote:'"Au lit à 21h, réveil à 6h. 9 heures. Non négociable."',
+    bedtime:'Heure de coucher', wakeTime:'Heure de réveil', quality:'Qualité 1–5', disruptions:'Perturbations',
+    sleepQualities:['5 — Totalement reposé','4 — Bien','3 — Moyen','2 — Mauvais','1 — Très mauvais'],
+    moodSub:'Convertissez les émotions subjectives en données objectives.',
+    timestamp:'Horodatage', stressLevel:'Niveau de stress 1–10', moodState:"État d'humeur", trigger:'Déclencheur',
+    moodChips:['😌 Calme','😊 Joyeux','😐 Neutre','😤 Irritable','😠 En colère','😰 Anxieux','😔 Triste','😴 Fatigué','🤩 Excité'],
+    moodKeys:['calm','happy','neutral','irritable','angry','anxious','sad','tired','excited'],
+    adhdSub:'Basé sur le cadre des fonctions exécutives de Barkley. 2–5 minutes par jour.',
+    simpleMode:'Simple 30s', fullMode:'Détaillé 3min',
+    anchorTask:"Avez-vous accompli votre tâche principale aujourd'hui?",
+    completed:'✓ Accompli', notCompleted:'✗ Non accompli', notSet:'— Non défini',
+    energyScale:'Énergie générale 1–10', brainFog:'Brouillard mental', appeared:'Oui', didntAppear:'Non',
+    saveTodayLog:"Enregistrer le journal du jour",
+    executiveFunction:'// Fonctions exécutives', startTime:'Combien de temps pour démarrer?',
+    immediately:'Démarré immédiatement', within30:'En moins de 30 min', over1hr:'Plus d\'1 heure', neverStarted:'Jamais démarré',
+    bodyState:'// État physique', sleepHours:'Heures dormies', meals:'Repas pris', mealsUnit:'repas', exercise:'Exercice?',
+    energyState:'// État énergétique', brainFogWhen:'Brouillard mental? Quand?',
+    fogChips:['Aucun','Matin','Après-midi','Soir','Toute la journée'], fogKeys:['none','morning','afternoon','evening','allday'],
+    rsdTitle:'// Régulation émotionnelle (RSD)', rsdQuestion:"Réaction émotionnelle intense à une critique ou rejet aujourd'hui?",
+    yes:'Oui', no:'Non', rsdTrigger:'Contexte déclencheur',
+    dailyReview:'// Bilan du jour', biggestObstacle:"Principal obstacle du jour", tomorrowAdjust:'Un ajustement pour demain',
+    focusSub:'Protocole de repos fixe. Maximiser la production cognitive.',
+    focus25:'Focus 25m', short5:'Pause courte 5m', long20:'Longue pause 20m',
+    start:'Démarrer', reset:'Réinitialiser', focusing:'En focus', resting:'En pause', idle:'Inactif', done:'Terminé',
+    focusMode:'Mode focus · 25 minutes', shortMode:'Pause courte · 5 minutes', longMode:'Longue pause · 20 minutes',
+    scheduleQuote:'"Le samedi à 20h15 c\'est la lessive. C\'est une constante universelle."',
+    addItem:'// Ajouter un élément', weekday:'Jour', timeSlot:'Créneau', itemName:'Nom', add:'Ajouter',
+    weekdays:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
+    timeSlots:['Matin 06–09','Matinée 09–12','Après-midi 12–18','Soirée 18–22','Coucher 22–00'],
+    general:'Général', work:'Travail',
+    foodQuote:'"Le jeudi soir c\'est cuisine indienne. Ce n\'est pas une préférence, c\'est un protocole."',
+    setMeal:'// Définir repas fixe', mealTime:'Repas', content:'Contenu', writeProtocol:'Écrire le protocole',
+    mealTimes:['Petit-déjeuner','Déjeuner','Dîner','Collation'],
+    enemySub:'Gérez systématiquement les offenses interpersonnelles.',
+    enemyQuote:'"La haine nécessite des preuves." — Sheldon Cooper',
+    registerEnemy:'// Enregistrer un ennemi', nameAlias:'Nom/Alias', relation:'Relation',
+    threatLevel:'Niveau de menace', offenseReason:"Raison de l'offense", revengeplan:'Plan de revanche', fileToArchive:'Archiver',
+    relations:['Collègue','Voisin','Ami','Famille','Inconnu','Ex'],
+    threatLevels:['1 — Légèrement ennuyeux','2 — Désagréable','3 — Véritable ennemi','4 — Némésis','5 — Menace ultime'],
+    offenseQuote:'"Penny s\'est encore assis à ma place. Troisième fois ce mois. Noté."',
+    archiveEvent:'// Archiver un événement', offender:'Offenseur', severity:'Gravité', eventDesc:"Description de l'événement",
+    severityLevels:['1 — Mineur','2 — Modéré','3 — Significatif','4 — Grave'],
+    modules:'// Modules', account:'// Compte',
+    privacyNote:'Données chiffrées dans Firebase. Seul vous y avez accès.',
+    totalRecords:'Total', periodDays:'Jours de règles', crampsCount:'Crampes',
+    avgType:'Type moyen', perfectBowel:'Selles parfaites', recordDays:'Jours enregistrés',
+    avgDuration:'Durée moyenne', avgQuality:'Qualité moyenne',
+    totalEntries:'Entrées totales', avgStress:'Stress moyen',
+    anchorRate:'Taux ancre', avgEnergy:'Énergie moy.', rsdDays:'Jours RSD',
+    todaySessions:"Sessions du jour", todayMinutes:"Focus du jour (min)", totalSessions:'Sessions totales',
+    activeEnemies:'Ennemis actifs', maxThreat:'Menace max', highRisk:'Haut risque',
+    archivedEvents:'Événements archivés', peopleInvolved:'Personnes impliquées', mostFrequent:'Le plus fréquent',
+  },
+  ar: {
+    overview:'نظرة عامة', health:'الصحة', productivity:'الإنتاجية', archive:'الأرشيف', system:'النظام',
+    dashboard:'لوحة اليوم', cycleTracker:'تتبع الدورة', bowelLog:'سجل الإخراج', sleepLog:'سجل النوم',
+    moodLog:'سجل المزاج', adhdLog:'سجل ADHD', focusTimer:'مؤقت التركيز', weeklySchedule:'الجدول الأسبوعي',
+    mealPlan:'خطة الوجبات', enemyList:'قائمة الأعداء', offenseArchive:'أرشيف الإساءات', settings:'الإعدادات',
+    signin:'تسجيل الدخول', signup:'إنشاء حساب', signOut:'تسجيل الخروج', or:'أو',
+    continueGoogle:'المتابعة مع Google',
+    loginNote:'بياناتك مشفرة ومخزنة بأمان. أنت الوحيد الذي يمكنه الوصول إليها.',
+    changeLang:'← تغيير اللغة',
+    tagline:'التأجيل · رسالة إلى نفسك المستقبلية',
+    language:'اللغة',
+    todayOverview:'نظرة عامة على اليوم',
+    allModules:'جميع الوحدات',
+    home:'الرئيسية', cycle:'الدورة', more:'المزيد',
+    setupTitle:'إعداد وحدات التتبع', setupSub:'اختر ما تريد تتبعه. يمكنك التغيير في أي وقت.',
+    coreModules:'الوحدات الأساسية', coreModulesSub:'الدورة، الإخراج، النوم، المزاج، التركيز، قائمة الأعداء (مطلوب)',
+    adhdModule:'سجل ADHD', adhdModuleSub:'تتبع الوظائف التنفيذية بناءً على إطار باركلي.',
+    scheduleModule:'الجدول الأسبوعي + خطة الوجبات', scheduleModuleSub:'بروتوكولات حياة ثابتة على طريقة شيلدون.',
+    startTracking:'ابدأ التتبع ←',
+    date:'التاريخ', time:'الوقت', type:'النوع', notes:'ملاحظات', saveEntry:'حفظ',
+    newEntry:'// إدخال جديد', logToday:'// تسجيل اليوم', logNow:'// تسجيل الآن',
+    calendarView:'// عرض التقويم', logYesternight:'// تسجيل الليلة الماضية',
+    cycleSub:'تتبع دورتك الشهرية وأعراضك وتغيرات جسمك. كلما زادت البيانات، كانت التنبؤات أدق.',
+    cycleQuote:'"فهم جسدك هو الشكل الأساسي للاستقلالية."',
+    period:'الحيض', spotting:'نزيف خفيف', ovulation:'التبويض', pms:'أعراض ما قبل الدورة',
+    flow:'الغزارة', light:'خفيف', medium:'متوسط', heavy:'غزير', veryHeavy:'غزير جداً',
+    predicted:'متوقع',
+    symptoms:'الأعراض',
+    cycleSymptoms:['تقلصات','انتفاخ','صداع','آلام الظهر','تقلبات مزاجية','إرهاق','حب الشباب','ألم الثدي','أرق','تغير الشهية'],
+    cycleSymptomKeys:['cramps','bloating','headache','backache','mood_swing','fatigue','acne','breast_tender','insomnia','appetite'],
+    bowelSub:'بناءً على مقياس بريستول. الصحة الهضمية هي أساس بيانات نظامك.',
+    bowelQuote:'"الجمعة عالية الألياف: حركة أمعاء اختيارية للمتابعة في 1:45 مساءً." — شيلدون',
+    bristolType:'نوع بريستول', color:'اللون', duration:'المدة', effort:'الجهد',
+    bristolTypes:['النوع 1 — كتل صلبة منفصلة','النوع 2 — شكل نقانق، مقطعة','النوع 3 — مثل نقانق مع شقوق','النوع 4 — مثل نقانق ناعمة ✓','النوع 5 — قطع طرية','النوع 6 — عجينية','النوع 7 — مائية'],
+    poopColors:['بني (طبيعي)','بني غامق','أصفر','أخضر','أسود ⚠','أحمر ⚠'],
+    poopDurations:['أقل من دقيقتين (مثالي)','2–5 دقائق','5–10 دقائق','أكثر من 10 دقائق'],
+    poopEfforts:['بدون جهد','جهد خفيف','جهد متوسط','جهد كبير'],
+    sleepSub:'تتبع مدة النوم وجودته لضمان عمل نظامك المعرفي بشكل مثالي.',
+    sleepQuote:'"النوم في التاسعة، الاستيقاظ في السادسة. 9 ساعات. غير قابل للتفاوض."',
+    bedtime:'وقت النوم', wakeTime:'وقت الاستيقاظ', quality:'الجودة 1–5', disruptions:'عوامل التشويش',
+    sleepQualities:['5 — استعادة كاملة','4 — جيد','3 — متوسط','2 — سيء','1 — سيء جداً'],
+    moodSub:'حوّل العواطف الذاتية إلى بيانات موضوعية. تحديد أنماط المحفزات.',
+    timestamp:'الطابع الزمني', stressLevel:'مستوى التوتر 1–10', moodState:'الحالة المزاجية', trigger:'المحفز',
+    moodChips:['😌 هادئ','😊 سعيد','😐 محايد','😤 متهيج','😠 غاضب','😰 قلق','😔 حزين','😴 متعب','🤩 متحمس'],
+    moodKeys:['calm','happy','neutral','irritable','angry','anxious','sad','tired','excited'],
+    adhdSub:'بناءً على إطار الوظائف التنفيذية لباركلي. 2–5 دقائق يومياً.',
+    simpleMode:'بسيط 30 ثانية', fullMode:'مفصل 3 دقائق',
+    anchorTask:'هل أنجزت مهمتك الرئيسية اليوم؟',
+    completed:'✓ أنجزت', notCompleted:'✗ لم أنجز', notSet:'— لم أحدد',
+    energyScale:'الطاقة العامة 1–10', brainFog:'ضباب ذهني', appeared:'نعم', didntAppear:'لا',
+    saveTodayLog:'حفظ سجل اليوم',
+    executiveFunction:'// الوظائف التنفيذية', startTime:'كم استغرقت للبدء؟',
+    immediately:'بدأت فوراً', within30:'في أقل من 30 دقيقة', over1hr:'أكثر من ساعة', neverStarted:'لم أبدأ أبداً',
+    bodyState:'// الحالة الجسدية', sleepHours:'ساعات النوم', meals:'الوجبات', mealsUnit:'وجبات', exercise:'تمرين؟',
+    energyState:'// حالة الطاقة', brainFogWhen:'هل ظهر ضباب ذهني؟ متى؟',
+    fogChips:['لا يوجد','الصباح','بعد الظهر','المساء','طوال اليوم'], fogKeys:['none','morning','afternoon','evening','allday'],
+    rsdTitle:'// تنظيم العواطف (RSD)', rsdQuestion:'هل تفاعلت بشكل مكثف مع نقد أو رفض اليوم؟',
+    yes:'نعم', no:'لا', rsdTrigger:'سياق المحفز',
+    dailyReview:'// مراجعة اليوم', biggestObstacle:'أكبر عقبة اليوم', tomorrowAdjust:'تعديل واحد للغد',
+    focusSub:'بروتوكول راحة ثابت. تعظيم الإنتاج المعرفي.',
+    focus25:'تركيز 25د', short5:'استراحة 5د', long20:'استراحة طويلة 20د',
+    start:'ابدأ', reset:'إعادة ضبط', focusing:'في التركيز', resting:'في الراحة', idle:'في انتظار', done:'اكتمل',
+    focusMode:'وضع التركيز · 25 دقيقة', shortMode:'استراحة قصيرة · 5 دقائق', longMode:'استراحة طويلة · 20 دقيقة',
+    scheduleQuote:'"السبت الساعة 8:15 مساءً هي ليلة الغسيل. هذا ثابت كوني."',
+    addItem:'// إضافة عنصر', weekday:'اليوم', timeSlot:'الفترة الزمنية', itemName:'اسم العنصر', add:'إضافة',
+    weekdays:['الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت','الأحد'],
+    timeSlots:['الصباح 06–09','الضحى 09–12','بعد الظهر 12–18','المساء 18–22','قبل النوم 22–00'],
+    general:'عام', work:'عمل',
+    foodQuote:'"عشاء الخميس هو المطبخ الهندي. هذا ليس تفضيلاً، إنه بروتوكول."',
+    setMeal:'// تحديد وجبة ثابتة', mealTime:'الوجبة', content:'المحتوى', writeProtocol:'كتابة البروتوكول',
+    mealTimes:['الإفطار','الغداء','العشاء','وجبة خفيفة'],
+    enemySub:'إدارة منهجية للإساءات الشخصية. حوّل الغضب إلى بيانات قابلة للأرشفة.',
+    enemyQuote:'"الكراهية تحتاج إلى دليل." — شيلدون كوبر',
+    registerEnemy:'// تسجيل عدو جديد', nameAlias:'الاسم/الاسم المستعار', relation:'العلاقة',
+    threatLevel:'مستوى التهديد', offenseReason:'سبب الإساءة', revengeplan:'خطة الانتقام', fileToArchive:'أرشفة',
+    relations:['زميل','جار','صديق','عائلة','غريب','سابق'],
+    threatLevels:['1 — مزعج بشكل طفيف','2 — غير مريح','3 — عدو حقيقي','4 — خصم لدود','5 — تهديد قصوى'],
+    offenseQuote:'"بيني جلست في مكاني مرة أخرى. المرة الثالثة هذا الشهر. مسجل."',
+    archiveEvent:'// أرشفة حدث جديد', offender:'المسيء', severity:'الخطورة', eventDesc:'وصف الحدث',
+    severityLevels:['1 — طفيف','2 — معتدل','3 — كبير','4 — خطير'],
+    modules:'// الوحدات', account:'// الحساب',
+    privacyNote:'البيانات مشفرة في Firebase. أنت الوحيد الذي يمكنه الوصول إليها.',
+    totalRecords:'إجمالي السجلات', periodDays:'أيام الحيض', crampsCount:'التقلصات',
+    avgType:'النوع المتوسط', perfectBowel:'حركة أمعاء مثالية', recordDays:'الأيام المسجلة',
+    avgDuration:'المدة المتوسطة', avgQuality:'الجودة المتوسطة',
+    totalEntries:'إجمالي الإدخالات', avgStress:'متوسط التوتر',
+    anchorRate:'معدل المهمة الرئيسية', avgEnergy:'متوسط الطاقة', rsdDays:'أيام RSD',
+    todaySessions:'جلسات اليوم', todayMinutes:'دقائق التركيز', totalSessions:'إجمالي الجلسات',
+    activeEnemies:'الأعداء النشطون', maxThreat:'أقصى تهديد', highRisk:'خطر عالٍ',
+    archivedEvents:'الأحداث المؤرشفة', peopleInvolved:'الأشخاص المعنيون', mostFrequent:'الأكثر تكراراً',
+  },
+  fa: {
+    overview:'مرور کلی', health:'سلامت', productivity:'بهره‌وری', archive:'آرشیو', system:'سیستم',
+    dashboard:'خلاصه امروز', cycleTracker:'ردیابی چرخه', bowelLog:'گزارش دفع', sleepLog:'گزارش خواب',
+    moodLog:'گزارش خلق‌وخو', adhdLog:'گزارش ADHD', focusTimer:'تایمر تمرکز', weeklySchedule:'برنامه هفتگی',
+    mealPlan:'برنامه غذایی', enemyList:'لیست دشمنان', offenseArchive:'بایگانی توهین‌ها', settings:'تنظیمات',
+    signin:'ورود', signup:'ثبت نام', signOut:'خروج', or:'یا',
+    continueGoogle:'ادامه با Google',
+    loginNote:'داده‌های شما رمزگذاری شده و ایمن ذخیره می‌شوند. فقط شما می‌توانید به آن‌ها دسترسی داشته باشید.',
+    changeLang:'← تغییر زبان',
+    tagline:'لذت معوق · نامه‌ای به خود آینده‌ات',
+    language:'زبان',
+    todayOverview:'مرور امروز',
+    allModules:'همه ماژول‌ها',
+    home:'خانه', cycle:'چرخه', more:'بیشتر',
+    setupTitle:'تنظیم ماژول‌های ردیابی', setupSub:'انتخاب کنید چه چیزی را ردیابی کنید. می‌توانید در هر زمان تغییر دهید.',
+    coreModules:'ماژول‌های اصلی', coreModulesSub:'چرخه، دفع، خواب، خلق‌وخو، تمرکز، لیست دشمنان (ضروری)',
+    adhdModule:'گزارش ADHD', adhdModuleSub:'ردیابی کارکرد اجرایی بر اساس چارچوب بارکلی.',
+    scheduleModule:'برنامه هفتگی + برنامه غذایی', scheduleModuleSub:'پروتکل‌های زندگی ثابت به سبک شلدون.',
+    startTracking:'شروع ردیابی ←',
+    date:'تاریخ', time:'زمان', type:'نوع', notes:'یادداشت‌ها', saveEntry:'ذخیره',
+    newEntry:'// ورودی جدید', logToday:'// ثبت امروز', logNow:'// ثبت اکنون',
+    calendarView:'// نمای تقویم', logYesternight:'// ثبت دیشب',
+    cycleSub:'چرخه قاعدگی، علائم و تغییرات جسمی خود را ردیابی کنید.',
+    cycleQuote:'"درک بدن خود، اساسی‌ترین شکل استقلال است."',
+    period:'قاعدگی', spotting:'لکه‌بینی', ovulation:'تخمک‌گذاری', pms:'علائم PMS',
+    flow:'شدت', light:'کم', medium:'متوسط', heavy:'زیاد', veryHeavy:'خیلی زیاد',
+    predicted:'پیش‌بینی شده',
+    symptoms:'علائم',
+    cycleSymptoms:['گرفتگی','نفخ','سردرد','کمردرد','نوسانات خلقی','خستگی','آکنه','حساسیت سینه','بی‌خوابی','تغییر اشتها'],
+    cycleSymptomKeys:['cramps','bloating','headache','backache','mood_swing','fatigue','acne','breast_tender','insomnia','appetite'],
+    bowelSub:'بر اساس مقیاس بریستول. سلامت گوارشی پایه داده‌های سیستم شما است.',
+    bowelQuote:'"جمعه پر از فیبر: دفع اختیاری دنباله‌دار در ساعت ۱:۴۵ بعدازظهر." — شلدون',
+    bristolType:'نوع بریستول', color:'رنگ', duration:'مدت', effort:'تلاش',
+    bristolTypes:['نوع ۱ — تکه‌های سفت جداگانه','نوع ۲ — شکل سوسیس، ناهموار','نوع ۳ — مثل سوسیس با ترک','نوع ۴ — مثل سوسیس صاف ✓','نوع ۵ — تکه‌های نرم','نوع ۶ — خمیری','نوع ۷ — آبکی'],
+    poopColors:['قهوه‌ای (طبیعی)','قهوه‌ای تیره','زرد','سبز','سیاه ⚠','قرمز ⚠'],
+    poopDurations:['کمتر از ۲ دقیقه (ایده‌آل)','۲–۵ دقیقه','۵–۱۰ دقیقه','بیشتر از ۱۰ دقیقه'],
+    poopEfforts:['بدون تلاش','تلاش کم','تلاش متوسط','تلاش زیاد'],
+    sleepSub:'مدت و کیفیت خواب را ردیابی کنید تا سیستم شناختی شما بهینه کار کند.',
+    sleepQuote:'"ساعت ۹ شب بخوابید، ساعت ۶ صبح بیدار شوید. ۹ ساعت. غیرقابل مذاکره."',
+    bedtime:'زمان خواب', wakeTime:'زمان بیداری', quality:'کیفیت ۱–۵', disruptions:'عوامل اختلال',
+    sleepQualities:['۵ — بازیابی کامل','۴ — خوب','۳ — متوسط','۲ — بد','۱ — خیلی بد'],
+    moodSub:'احساسات ذهنی را به داده‌های عینی تبدیل کنید.',
+    timestamp:'مهر زمانی', stressLevel:'سطح استرس ۱–۱۰', moodState:'وضعیت خلقی', trigger:'محرک',
+    moodChips:['😌 آرام','😊 خوشحال','😐 خنثی','😤 تحریک‌پذیر','😠 عصبانی','😰 نگران','😔 غمگین','😴 خسته','🤩 هیجان‌زده'],
+    moodKeys:['calm','happy','neutral','irritable','angry','anxious','sad','tired','excited'],
+    adhdSub:'بر اساس چارچوب کارکرد اجرایی بارکلی. روزانه ۲–۵ دقیقه.',
+    simpleMode:'ساده ۳۰ ثانیه', fullMode:'دقیق ۳ دقیقه',
+    anchorTask:'آیا وظیفه اصلی‌ات را امروز انجام دادی؟',
+    completed:'✓ انجام دادم', notCompleted:'✗ انجام ندادم', notSet:'— تعیین نکردم',
+    energyScale:'انرژی کلی ۱–۱۰', brainFog:'مه مغزی', appeared:'بله', didntAppear:'خیر',
+    saveTodayLog:'ذخیره گزارش امروز',
+    executiveFunction:'// کارکرد اجرایی', startTime:'چقدر طول کشید تا شروع کردی؟',
+    immediately:'فوری شروع کردم', within30:'در ۳۰ دقیقه', over1hr:'بیشتر از ۱ ساعت', neverStarted:'اصلاً شروع نکردم',
+    bodyState:'// وضعیت جسمی', sleepHours:'ساعت‌های خواب', meals:'وعده‌های غذایی', mealsUnit:'وعده', exercise:'ورزش؟',
+    energyState:'// وضعیت انرژی', brainFogWhen:'مه مغزی داشتی؟ کِی؟',
+    fogChips:['هیچ','صبح','بعدازظهر','عصر','تمام روز'], fogKeys:['none','morning','afternoon','evening','allday'],
+    rsdTitle:'// تنظیم هیجانی (RSD)', rsdQuestion:'امروز واکنش هیجانی شدیدی به انتقاد یا طرد داشتی؟',
+    yes:'بله', no:'خیر', rsdTrigger:'زمینه محرک',
+    dailyReview:'// بازبینی روزانه', biggestObstacle:'بزرگترین مانع امروز', tomorrowAdjust:'یک تنظیم برای فردا',
+    focusSub:'پروتکل استراحت ثابت. به حداکثر رساندن خروجی شناختی.',
+    focus25:'تمرکز ۲۵د', short5:'استراحت ۵د', long20:'استراحت طولانی ۲۰د',
+    start:'شروع', reset:'بازنشانی', focusing:'در حال تمرکز', resting:'در حال استراحت', idle:'آماده‌به‌کار', done:'تمام شد',
+    focusMode:'حالت تمرکز · ۲۵ دقیقه', shortMode:'استراحت کوتاه · ۵ دقیقه', longMode:'استراحت طولانی · ۲۰ دقیقه',
+    scheduleQuote:'"شنبه ساعت ۸:۱۵ شب شستشو است. این یک ثابت جهانی است."',
+    addItem:'// افزودن مورد', weekday:'روز', timeSlot:'بازه زمانی', itemName:'نام مورد', add:'افزودن',
+    weekdays:['دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه','یکشنبه'],
+    timeSlots:['صبح ۰۶–۰۹','اواسط صبح ۰۹–۱۲','بعدازظهر ۱۲–۱۸','عصر ۱۸–۲۲','قبل از خواب ۲۲–۰۰'],
+    general:'عمومی', work:'کار',
+    foodQuote:'"شام پنجشنبه غذای هندی است. این یک ترجیح نیست، یک پروتکل است."',
+    setMeal:'// تنظیم وعده ثابت', mealTime:'وعده', content:'محتوا', writeProtocol:'نوشتن پروتکل',
+    mealTimes:['صبحانه','ناهار','شام','میان‌وعده'],
+    enemySub:'مدیریت سیستماتیک توهین‌های بین‌فردی. خشم را به داده‌های قابل آرشیو تبدیل کنید.',
+    enemyQuote:'"نفرت به مدرک نیاز دارد." — شلدون کوپر',
+    registerEnemy:'// ثبت دشمن جدید', nameAlias:'نام/نام مستعار', relation:'رابطه',
+    threatLevel:'سطح تهدید', offenseReason:'دلیل توهین', revengeplan:'برنامه انتقام', fileToArchive:'بایگانی',
+    relations:['همکار','همسایه','دوست','خانواده','غریبه','سابق'],
+    threatLevels:['۱ — کمی آزاردهنده','۲ — ناخوشایند','۳ — دشمن واقعی','۴ — حریف سرسخت','۵ — تهدید نهایی'],
+    offenseQuote:'"پنی دوباره روی جای من نشست. سومین بار این ماه. ثبت شد."',
+    archiveEvent:'// بایگانی رویداد جدید', offender:'توهین‌کننده', severity:'شدت', eventDesc:'توضیح رویداد',
+    severityLevels:['۱ — جزئی','۲ — متوسط','۳ — قابل توجه','۴ — شدید'],
+    modules:'// ماژول‌ها', account:'// حساب کاربری',
+    privacyNote:'داده‌ها در Firebase رمزگذاری شده‌اند. فقط شما می‌توانید به آن‌ها دسترسی داشته باشید.',
+    totalRecords:'کل رکوردها', periodDays:'روزهای قاعدگی', crampsCount:'گرفتگی',
+    avgType:'نوع میانگین', perfectBowel:'دفع کامل', recordDays:'روزهای ثبت‌شده',
+    avgDuration:'مدت میانگین', avgQuality:'کیفیت میانگین',
+    totalEntries:'کل ورودی‌ها', avgStress:'میانگین استرس',
+    anchorRate:'نرخ وظیفه اصلی', avgEnergy:'میانگین انرژی', rsdDays:'روزهای RSD',
+    todaySessions:'جلسات امروز', todayMinutes:'دقایق تمرکز', totalSessions:'کل جلسات',
+    activeEnemies:'دشمنان فعال', maxThreat:'حداکثر تهدید', highRisk:'خطر بالا',
+    archivedEvents:'رویدادهای بایگانی‌شده', peopleInvolved:'افراد درگیر', mostFrequent:'پرتکرارترین',
+  }
+};
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+let currentLang = localStorage.getItem('fsp_lang') || 'zh';
+let currentUser = null;
+let userProfile = { adhdEnabled: false, scheduleEnabled: false };
+let fd = {};
+let nv = { adhd_sleep: 7, adhd_meals: 3 };
+let cycleCalYear, cycleCalMonth;
+let timerInterval = null, timerRunning = false;
+let timerSec = 1500, timerTotal = 1500, timerMode = 'focus';
+let adhdMode = 'simple';
+
+function t(key) { return T[currentLang]?.[key] || T['en']?.[key] || key; }
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function isRTL() { return currentLang === 'ar' || currentLang === 'fa'; }
+
+// ══════════════════════════════════
+// SCREENS
+// ══════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('screen-' + id).classList.add('on');
+}
+
+// ══════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════
+let selectedLang = null;
+
+window.selectLang = function(lang) {
+  selectedLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('lb-' + lang)?.classList.add('on');
+  document.getElementById('lang-go-btn').disabled = false;
+  document.getElementById('lang-go-btn').textContent =
+    lang === 'zh' ? '继续 →' : lang === 'ar' ? 'استمر ←' : lang === 'fa' ? 'ادامه ←' : lang === 'fr' ? 'Continuer →' : 'Continue →';
+};
+
+window.goToLogin = function() {
+  if (!selectedLang) return;
+  currentLang = selectedLang;
+  localStorage.setItem('fsp_lang', currentLang);
+  applyLang();
+  showScreen('login');
+};
+
+window.backToLang = function() { showScreen('lang'); };
+
+window.changeLang = function(lang) {
+  currentLang = lang;
+  localStorage.setItem('fsp_lang', lang);
+  applyLang();
+  document.getElementById('lang-dropdown').classList.remove('on');
+};
+
+window.toggleLangDropdown = function() {
+  document.getElementById('lang-dropdown').classList.toggle('on');
+};
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.lang-switcher')) {
+    document.getElementById('lang-dropdown')?.classList.remove('on');
+  }
+});
+
+function applyLang() {
+  const dir = isRTL() ? 'rtl' : 'ltr';
+  document.documentElement.setAttribute('dir', dir);
+  document.documentElement.setAttribute('lang', currentLang);
+
+  // text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val) el.textContent = val;
+  });
+
+  // placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    const val = t(key);
+    if (val) el.placeholder = val;
+  });
+
+  // select options
+  document.querySelectorAll('[data-i18n-options]').forEach(el => {
+    const key = el.getAttribute('data-i18n-options');
+    const opts = t(key);
+    if (Array.isArray(opts)) {
+      const cur = el.value;
+      el.innerHTML = opts.map((o, i) => `<option value="${i}">${o}</option>`).join('');
+    }
+  });
+
+  // dynamic chips
+  renderCycleSymptomChips();
+  renderMoodChips();
+  renderAdhdFogChips();
+
+  // lang switcher label
+  const langNames = { zh:'中文', en:'English', fr:'Français', ar:'العربية', fa:'فارسی' };
+  const btn = document.getElementById('lang-current-btn');
+  if (btn) btn.textContent = (langNames[currentLang] || currentLang) + ' ▾';
+
+  // login tagline
+  const taglineMap = {
+    zh:'延迟满足 · 写给未来的自己',
+    en:'Delayed gratification · A letter to your future self',
+    fr:'Gratification différée · Une lettre à soi futur',
+    ar:'تأجيل الإشباع · رسالة لنفسك المستقبلية',
+    fa:'لذت معوق · نامه‌ای به خود آینده‌ات'
+  };
+  const el = document.getElementById('login-tagline');
+  if (el) el.textContent = taglineMap[currentLang] || taglineMap.en;
+
+  // timer label
+  updateTimerLabel();
+
+  // module toggle buttons
+  updateModuleToggleButtons();
+
+  // rebuild dynamic selects
+  rebuildSelectOptions();
+}
+
+function rebuildSelectOptions() {
+  const maps = {
+    'po-type': 'bristolTypes', 'po-color': 'poopColors',
+    'po-dur': 'poopDurations', 'po-effort': 'poopEfforts',
+    'sl-quality': 'sleepQualities',
+    'sch-day': 'weekdays', 'sch-slot': 'timeSlots',
+    'fo-day': 'weekdays', 'fo-meal': 'mealTimes',
+    'en-rel': 'relations', 'en-threat': 'threatLevels',
+    'of-level': 'severityLevels'
+  };
+  for (const [id, key] of Object.entries(maps)) {
+    const el = document.getElementById(id);
+    const opts = t(key);
+    if (el && Array.isArray(opts)) {
+      const vals = {
+        'en-threat': ['1','2','3','4','5'],
+        'of-level': ['1','2','3','4'],
+      };
+      el.innerHTML = opts.map((o, i) => {
+        const v = vals[id] ? vals[id][i] : i;
+        return `<option value="${v}">${o}</option>`;
+      }).join('');
+      // restore defaults
+      if (id === 'po-type') el.value = '3'; // 4th option index 3
+      if (id === 'sl-quality') el.value = '1'; // index 1 = quality 4
+      if (id === 'en-threat') el.value = '3';
+      if (id === 'of-level') el.value = '3';
+    }
+  }
+}
+
+function renderCycleSymptomChips() {
+  const c = document.getElementById('cy-symptoms'); if (!c) return;
+  const labels = t('cycleSymptoms'), keys = t('cycleSymptomKeys');
+  if (!Array.isArray(labels)) return;
+  c.innerHTML = labels.map((l, i) =>
+    `<button class="chip rose" onclick="chipToggle(this,'cy_symp','${keys[i]}')">${l}</button>`
+  ).join('');
+}
+
+function renderMoodChips() {
+  const c = document.getElementById('mood-chips'); if (!c) return;
+  const labels = t('moodChips'), keys = t('moodKeys');
+  if (!Array.isArray(labels)) return;
+  c.innerHTML = labels.map((l, i) =>
+    `<button class="chip" onclick="chipToggle(this,'mo_mood','${keys[i]}')">${l}</button>`
+  ).join('');
+}
+
+function renderAdhdFogChips() {
+  const c = document.getElementById('adhd-fog-chips'); if (!c) return;
+  const labels = t('fogChips'), keys = t('fogKeys');
+  if (!Array.isArray(labels)) return;
+  c.innerHTML = labels.map((l, i) =>
+    `<button class="chip" onclick="chipToggle(this,'adhd_fog','${keys[i]}')">${l}</button>`
+  ).join('');
+}
+
+// ══════════════════════════════════
+// AUTH
+// ══════════════════════════════════
+let loginTab = 'signin';
+
+window.switchLoginTab = function(tab) {
+  loginTab = tab;
+  document.getElementById('tab-signin').classList.toggle('on', tab === 'signin');
+  document.getElementById('tab-signup').classList.toggle('on', tab === 'signup');
+  document.getElementById('login-pw2').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('login-action-btn').querySelector('[data-i18n]').setAttribute('data-i18n', tab);
+  document.getElementById('login-action-btn').querySelector('[data-i18n]').textContent = t(tab);
+};
+
+window.doEmailAuth = async function() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  if (!email || !pw) { err.textContent = '请填写邮箱和密码'; return; }
+  try {
+    const { createUserWithEmailAndPassword, signInWithEmailAndPassword } =
+      await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+    if (loginTab === 'signup') {
+      const pw2 = document.getElementById('login-pw2').value;
+      if (pw !== pw2) { err.textContent = '两次密码不一致'; return; }
+      await createUserWithEmailAndPassword(auth, email, pw);
+    } else {
+      await signInWithEmailAndPassword(auth, email, pw);
+    }
+  } catch (e) {
+    const msgs = {
+      'auth/email-already-in-use': '该邮箱已注册，请直接登录',
+      'auth/invalid-email': '邮箱格式不正确',
+      'auth/weak-password': '密码至少需要6位',
+      'auth/user-not-found': '账号不存在，请先注册',
+      'auth/wrong-password': '密码错误',
+      'auth/invalid-credential': '邮箱或密码错误',
+    };
+    err.textContent = msgs[e.code] || e.message;
+  }
+};
+
+window.doGoogleLogin = async function() {
+  try {
+    await signInWithPopup(auth, GoogleProvider);
+  } catch (e) {
+    document.getElementById('login-err').textContent = e.message;
+  }
+};
+
+window.doSignOut = async function() {
+  await signOut(auth);
+  showScreen('login');
+  currentUser = null;
+};
+
+// Auth state listener
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    await loadUserProfile();
+    initApp();
+  } else {
+    currentUser = null;
+    if (localStorage.getItem('fsp_lang')) {
+      showScreen('login');
+    } else {
+      showScreen('lang');
+    }
+  }
+});
+
+// ══════════════════════════════════
+// FIRESTORE HELPERS
+// ══════════════════════════════════
+function userRef() {
+  return doc(db, 'users', currentUser.uid);
+}
+function colRef(name) {
+  return collection(db, 'users', currentUser.uid, name);
+}
+
+async function fsAdd(col, data) {
+  try { await addDoc(colRef(col), { ...data, _ts: Date.now() }); }
+  catch(e) { console.error('fsAdd', e); }
+}
+
+async function fsDel(col, id) {
+  try { await deleteDoc(doc(db, 'users', currentUser.uid, col, id)); }
+  catch(e) { console.error('fsDel', e); }
+}
+
+async function fsGetAll(col) {
+  try {
+    const snap = await getDocs(colRef(col));
+    return snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+  } catch(e) { return []; }
+}
+
+async function fsSave(path, data) {
+  try {
+    await setDoc(doc(db, 'users', currentUser.uid, path[0], path[1]), data, { merge: true });
+  } catch(e) { console.error('fsSave', e); }
+}
+
+async function loadUserProfile() {
+  try {
+    const snap = await getDoc(userRef());
+    if (snap.exists()) {
+      userProfile = snap.data().profile || { adhdEnabled: false, scheduleEnabled: false };
+    }
+  } catch(e) {}
+}
+
+async function saveUserProfile() {
+  try {
+    await setDoc(userRef(), { profile: userProfile }, { merge: true });
+  } catch(e) {}
+}
+
+// ══════════════════════════════════
+// SETUP SCREEN
+// ══════════════════════════════════
+let setupOpts = { core: true, adhd: false, schedule: false };
+
+window.toggleSetupOpt = function(key) {
+  if (key === 'core') return;
+  setupOpts[key] = !setupOpts[key];
+  document.getElementById('setup-' + key).classList.toggle('on', setupOpts[key]);
+};
+
+window.finishSetup = async function() {
+  userProfile = { adhdEnabled: setupOpts.adhd, scheduleEnabled: setupOpts.schedule };
+  await saveUserProfile();
+  applyModuleVisibility();
+  initApp();
+  showScreen('app');
+};
+
+// ══════════════════════════════════
+// MODULE VISIBILITY
+// ══════════════════════════════════
+function applyModuleVisibility() {
+  const adhd = userProfile.adhdEnabled;
+  const sched = userProfile.scheduleEnabled;
+  document.querySelectorAll('.nav-adhd').forEach(el => el.style.display = adhd ? '' : 'none');
+  document.querySelectorAll('.nav-schedule').forEach(el => el.style.display = sched ? '' : 'none');
+  document.querySelectorAll('.drawer-adhd').forEach(el => el.style.display = adhd ? '' : 'none');
+  document.querySelectorAll('.drawer-schedule').forEach(el => el.style.display = sched ? '' : 'none');
+  document.querySelectorAll('.nav-adhd-btn').forEach(el => el.style.display = adhd ? '' : 'none');
+  updateModuleToggleButtons();
+}
+
+function updateModuleToggleButtons() {
+  const ab = document.getElementById('adhd-toggle-btn');
+  const sb = document.getElementById('schedule-toggle-btn');
+  if (ab) ab.textContent = userProfile.adhdEnabled ? (t('yes') + ' ✓') : (t('no'));
+  if (sb) sb.textContent = userProfile.scheduleEnabled ? (t('yes') + ' ✓') : (t('no'));
+}
+
+window.toggleAdhdModule = async function() {
+  userProfile.adhdEnabled = !userProfile.adhdEnabled;
+  await saveUserProfile();
+  applyModuleVisibility();
+  toast(userProfile.adhdEnabled ? 'ADHD ✓' : 'ADHD off');
+};
+
+window.toggleScheduleModule = async function() {
+  userProfile.scheduleEnabled = !userProfile.scheduleEnabled;
+  await saveUserProfile();
+  applyModuleVisibility();
+};
+
+// ══════════════════════════════════
+// APP INIT
+// ══════════════════════════════════
+async function initApp() {
+  const snap = await getDoc(userRef());
+  const hasProfile = snap.exists() && snap.data().profile !== undefined;
+
+  if (!hasProfile) {
+    applyLang();
+    showScreen('setup');
+    return;
+  }
+
+  applyLang();
+  applyModuleVisibility();
+  showScreen('app');
+
+  const now = new Date();
+  cycleCalYear = now.getFullYear();
+  cycleCalMonth = now.getMonth();
+
+  setDefaults();
+  renderAll();
+  updateUserDisplay();
+  updateTimerLabel();
+}
+
+function updateUserDisplay() {
+  if (!currentUser) return;
+  const email = currentUser.email || currentUser.displayName || '';
+  document.getElementById('user-email-display').textContent = email;
+  document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+  document.getElementById('settings-email').textContent = email;
+}
+
+function setDefaults() {
+  const now = new Date();
+  const ts = now.toISOString().slice(0, 10);
+  const tm = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  ['po-date','sl-date','cy-date','of-date'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = ts;
+  });
+  const dtml = document.getElementById('mo-time');
+  if (dtml) dtml.value = now.toISOString().slice(0, 16);
+  const pot = document.getElementById('po-time'); if (pot) pot.value = tm;
+}
+
+// ══════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════
+const VIEWS = ['dashboard','cycle','poop','sleep','mood','adhd','focus','schedule','food','enemy','offense','settings'];
+
+window.goto = function(id) {
+  VIEWS.forEach(v => {
+    document.getElementById('v-'+v)?.classList.toggle('on', v === id);
+  });
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.remove('on','rose','red');
+    if (el.getAttribute('onclick')?.includes(`'${id}'`)) {
+      el.classList.add('on');
+      if (id === 'cycle') el.classList.add('rose');
+      if (['enemy','offense'].includes(id)) el.classList.add('red');
+    }
+  });
+  document.querySelectorAll('.mobile-nav-btn').forEach(el => {
+    el.classList.toggle('on', el.getAttribute('onclick')?.includes(`'${id}'`));
+  });
+  if (id === 'cycle') renderCycleCalendar();
+  if (id === 'schedule') renderScheduleGrid();
+  if (id === 'food') renderFoodGrid();
+  if (id === 'dashboard') renderDashboard();
+  document.getElementById('main-content')?.scrollTo(0, 0);
+};
+
+window.openDrawer = function() {
+  document.getElementById('drawer').classList.add('on');
+  document.getElementById('drawer-overlay').classList.add('on');
+};
+window.closeDrawer = function() {
+  document.getElementById('drawer').classList.remove('on');
+  document.getElementById('drawer-overlay').classList.remove('on');
+};
+window.drawerGoto = function(id) { closeDrawer(); setTimeout(() => goto(id), 200); };
+
+// ══════════════════════════════════
+// FORM HELPERS
+// ══════════════════════════════════
+window.scaleSelectId = function(containerId, key, val) {
+  document.getElementById(containerId).querySelectorAll('.scb').forEach((b, i) => b.classList.toggle('on', i < val));
+  fd[key] = val;
+};
+window.chipToggle = function(btn, key, val) {
+  btn.classList.toggle('on');
+  if (!fd[key]) fd[key] = [];
+  if (btn.classList.contains('on')) { if (!fd[key].includes(val)) fd[key].push(val); }
+  else fd[key] = fd[key].filter(v => v !== val);
+};
+window.adhdYN = function(btn, key, val) {
+  btn.closest('.yn').querySelectorAll('.ynb').forEach(b => b.classList.remove('y','n'));
+  if (val === 'yes') btn.classList.add('y');
+  else if (val === 'no') btn.classList.add('n');
+  else btn.classList.add('y');
+  fd[key] = val;
+  if (key === 'rsd') document.getElementById('rsd-q').style.display = val === 'yes' ? 'block' : 'none';
+};
+window.tcSelect = function(btn, key, val) {
+  btn.closest('.tc-row').querySelectorAll('.tcbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on'); fd[key] = val;
+};
+window.numAdj = function(key, delta) {
+  const lims = { adhd_sleep:[0,24,.5], adhd_meals:[0,10,1] };
+  const [mn,mx] = lims[key]||[0,99,1];
+  nv[key] = Math.min(mx, Math.max(mn, +((nv[key]||0)+delta).toFixed(1)));
+  document.getElementById('nv-'+key).textContent = nv[key];
+  fd[key] = nv[key];
+};
+function clearForm() {
+  fd = {};
+  document.querySelectorAll('.scb.on,.chip.on').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.ynb.y,.ynb.n').forEach(b => b.classList.remove('y','n'));
+  document.querySelectorAll('.tcbtn.on').forEach(b => b.classList.remove('on'));
+}
+
+// ══════════════════════════════════
+// CYCLE
+// ══════════════════════════════════
+let cycleCache = [];
+
+window.addCycle = async function() {
+  const entry = {
+    date: document.getElementById('cy-date').value,
+    type: document.getElementById('cy-type').value,
+    flow: document.getElementById('cy-flow').value,
+    pain: fd.cy_pain || 0,
+    symptoms: fd.cy_symp || [],
+    note: document.getElementById('cy-note').value,
+  };
+  if (!entry.date) { toast('请选择日期'); return; }
+  await fsAdd('cycle', entry);
+  clearForm(); document.getElementById('cy-note').value = '';
+  await loadAndRenderCycle();
+  toast('✓ ' + t('saveEntry'));
+};
+
+async function loadAndRenderCycle() {
+  cycleCache = await fsGetAll('cycle');
+  cycleCache.sort((a,b) => b.date.localeCompare(a.date));
+  renderCycleCalendar(); renderCycleStats(); renderCycleList();
+}
+
+window.cycleCalNav = function(dir) {
+  cycleCalMonth += dir;
+  if (cycleCalMonth < 0) { cycleCalMonth = 11; cycleCalYear--; }
+  if (cycleCalMonth > 11) { cycleCalMonth = 0; cycleCalYear++; }
+  renderCycleCalendar();
+};
+
+function renderCycleCalendar() {
+  const months = {
+    zh:['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
+    en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    fr:['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+    ar:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    fa:['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'],
+  };
+  document.getElementById('cycle-month-lbl').textContent = `${cycleCalYear} · ${(months[currentLang]||months.en)[cycleCalMonth]}`;
+
+  const dows = t('weekdays') || ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dowContainer = document.getElementById('cycle-cal-dows');
+  if (dowContainer) {
+    const sunFirst = ['Su',...dows.slice(0,6)];
+    dowContainer.innerHTML = sunFirst.map(d => `<div class="cal-dow">${d}</div>`).join('');
+  }
+
+  const first = new Date(cycleCalYear, cycleCalMonth, 1).getDay();
+  const days = new Date(cycleCalYear, cycleCalMonth+1, 0).getDate();
+  const today = new Date();
+  const periodDates = new Set(cycleCache.filter(e => e.type === 'period').map(e => e.date));
+  const grid = document.getElementById('cycle-cal');
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (let i = 0; i < first; i++) {
+    const b = document.createElement('div'); b.className = 'cday blank'; grid.appendChild(b);
+  }
+  for (let d = 1; d <= days; d++) {
+    const key = `${cycleCalYear}-${String(cycleCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = d === today.getDate() && cycleCalMonth === today.getMonth() && cycleCalYear === today.getFullYear();
+    const isPeriod = periodDates.has(key);
+    const cell = document.createElement('div');
+    cell.className = 'cday' + (isToday?' today':'') + (isPeriod?' period':'');
+    cell.textContent = d;
+    if (isPeriod) { const dot = document.createElement('div'); dot.className='cday-dot'; dot.style.background='var(--r)'; cell.appendChild(dot); }
+    grid.appendChild(cell);
+  }
+}
+
+function renderCycleStats() {
+  const total = cycleCache.length;
+  const periods = cycleCache.filter(e => e.type === 'period').length;
+  const cramps = cycleCache.filter(e => e.symptoms?.includes('cramps')).length;
+  document.getElementById('cycle-stats').innerHTML = `
+    <div class="sc"><div class="sn r">${total}</div><div class="sl">${t('totalRecords')}</div></div>
+    <div class="sc"><div class="sn r">${periods}</div><div class="sl">${t('periodDays')}</div></div>
+    <div class="sc"><div class="sn r">${cramps}</div><div class="sl">${t('crampsCount')}</div></div>
+  `;
+}
+
+function renderCycleList() {
+  const el = document.getElementById('cycle-list');
+  if (!cycleCache.length) { el.innerHTML = `<div class="empty">${t('noEntries')||'—'}</div>`; return; }
+  const typeKeys = t('cycleSymptomKeys') || [];
+  const typeLabels = t('cycleSymptoms') || [];
+  const flowMap = { light: t('light'), medium: t('medium'), heavy: t('heavy'), very_heavy: t('veryHeavy') };
+  const typeMap = { period: t('period'), spotting: t('spotting'), ovulation: t('ovulation'), pms: t('pms') };
+  el.innerHTML = cycleCache.slice(0, 20).map(e => `
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${e.date}</div>
+        <div class="le-body">
+          <span class="tag tr">${typeMap[e.type]||e.type}</span>
+          ${e.flow ? `<span class="tag tn">${flowMap[e.flow]||e.flow}</span>` : ''}
+          ${(e.symptoms||[]).slice(0,3).map(s => {
+            const idx = typeKeys.indexOf(s);
+            return `<span class="tag tn">${idx>=0?typeLabels[idx]:s}</span>`;
+          }).join('')}
+        </div>
+        ${e.note ? `<div class="le-note">${e.note}</div>` : ''}
+      </div>
+      <button class="btn bdel" onclick="delEntry('cycle','${e._id}')">${t('delete')||'删'}</button>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════
+// POOP
+// ══════════════════════════════════
+let poopCache = [];
+window.addPoop = async function() {
+  const typeEl = document.getElementById('po-type');
+  const entry = {
+    date: document.getElementById('po-date').value,
+    time: document.getElementById('po-time').value,
+    type: +typeEl.value + 1,
+    color: document.getElementById('po-color').value,
+    duration: document.getElementById('po-dur').value,
+    effort: document.getElementById('po-effort').value,
+    note: document.getElementById('po-note').value,
+  };
+  await fsAdd('poop', entry);
+  document.getElementById('po-note').value = '';
+  await loadAndRenderPoop();
+  toast('✓');
+};
+async function loadAndRenderPoop() {
+  poopCache = await fsGetAll('poop');
+  poopCache.sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
+  renderPoop();
+}
+function renderPoop() {
+  const el = document.getElementById('poop-list'); if (!el) return;
+  const types = t('bristolTypes') || [];
+  if (!poopCache.length) { el.innerHTML = `<div class="empty">—</div>`; return; }
+  el.innerHTML = poopCache.slice(0,15).map(p => `
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${p.date} ${p.time||''}</div>
+        <div class="le-body">
+          <span class="tag ${p.type===4?'tg':p.type<=3||p.type>=6?'te':'ta'}">${types[p.type-1]||p.type}</span>
+        </div>
+        ${p.note?`<div class="le-note">${p.note}</div>`:''}
+      </div>
+      <button class="btn bdel" onclick="delEntry('poop','${p._id}')">${t('delete')||'删'}</button>
+    </div>
+  `).join('');
+  const total = poopCache.length, perfect = poopCache.filter(p=>p.type===4).length;
+  const avg = total ? (poopCache.reduce((s,p)=>s+p.type,0)/total).toFixed(1) : '—';
+  document.getElementById('poop-stats').innerHTML = `
+    <div class="sc"><div class="sn">${total}</div><div class="sl">${t('totalRecords')}</div></div>
+    <div class="sc"><div class="sn a">${avg}</div><div class="sl">${t('avgType')}</div></div>
+    <div class="sc"><div class="sn g">${perfect}</div><div class="sl">${t('perfectBowel')}</div></div>
+  `;
+}
+
+// ══════════════════════════════════
+// SLEEP
+// ══════════════════════════════════
+let sleepCache = [];
+window.addSleep = async function() {
+  const s = document.getElementById('sl-sleep').value, w = document.getElementById('sl-wake').value;
+  const sh=+s.split(':')[0],sm=+s.split(':')[1],wh=+w.split(':')[0],wm=+w.split(':')[1];
+  let dur=(wh*60+wm)-(sh*60+sm); if(dur<0) dur+=1440;
+  const entry = {
+    date: document.getElementById('sl-date').value,
+    sleepTime: s, wakeTime: w, durationMin: dur,
+    quality: +document.getElementById('sl-quality').value + 1,
+    disruption: document.getElementById('sl-disruption').value,
+  };
+  await fsAdd('sleep', entry);
+  document.getElementById('sl-disruption').value = '';
+  await loadAndRenderSleep();
+  toast('✓');
+};
+async function loadAndRenderSleep() {
+  sleepCache = await fsGetAll('sleep');
+  sleepCache.sort((a,b) => b.date.localeCompare(a.date));
+  renderSleep();
+}
+function renderSleep() {
+  const el = document.getElementById('sleep-list'); if (!el) return;
+  if (!sleepCache.length) { el.innerHTML = `<div class="empty">—</div>`; return; }
+  el.innerHTML = sleepCache.slice(0,15).map(s => `
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${s.date}</div>
+        <div class="le-body">
+          <span class="tag tv">${s.sleepTime}→${s.wakeTime}</span>
+          <span class="tag ${s.durationMin>=420?'tg':s.durationMin>=360?'ta':'te'}">${Math.floor(s.durationMin/60)}h${s.durationMin%60}m</span>
+          <span class="tag ${s.quality>=4?'tg':s.quality>=3?'ta':'te'}">${t('quality')||'Q'} ${s.quality}/5</span>
+        </div>
+        ${s.disruption?`<div class="le-note">${s.disruption}</div>`:''}
+      </div>
+      <button class="btn bdel" onclick="delEntry('sleep','${s._id}')">${t('delete')||'删'}</button>
+    </div>
+  `).join('');
+  const total=sleepCache.length;
+  const avgMin=total?Math.round(sleepCache.reduce((s,e)=>s+e.durationMin,0)/total):0;
+  const avgQ=total?(sleepCache.reduce((s,e)=>s+e.quality,0)/total).toFixed(1):'—';
+  document.getElementById('sleep-stats').innerHTML=`
+    <div class="sc"><div class="sn">${total}</div><div class="sl">${t('recordDays')}</div></div>
+    <div class="sc"><div class="sn a">${Math.floor(avgMin/60)}h${avgMin%60}m</div><div class="sl">${t('avgDuration')}</div></div>
+    <div class="sc"><div class="sn">${avgQ}</div><div class="sl">${t('avgQuality')}</div></div>
+  `;
+}
+
+// ══════════════════════════════════
+// MOOD
+// ══════════════════════════════════
+let moodCache = [];
+window.addMood = async function() {
+  const entry = {
+    datetime: document.getElementById('mo-time').value,
+    stress: +document.getElementById('mo-stress').value,
+    moods: fd.mo_mood || [],
+    trigger: document.getElementById('mo-trigger').value,
+  };
+  await fsAdd('mood', entry);
+  clearForm(); document.getElementById('mo-trigger').value = '';
+  renderMoodChips();
+  await loadAndRenderMood();
+  toast('✓');
+};
+async function loadAndRenderMood() {
+  moodCache = await fsGetAll('mood');
+  moodCache.sort((a,b)=>(b.datetime||'').localeCompare(a.datetime||''));
+  renderMood();
+}
+function renderMood() {
+  const el=document.getElementById('mood-list'); if(!el) return;
+  if(!moodCache.length){el.innerHTML=`<div class="empty">—</div>`;return;}
+  el.innerHTML=moodCache.slice(0,15).map(m=>`
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${(m.datetime||'').replace('T',' ')}</div>
+        <div class="le-body">
+          <span class="tag ${m.stress>=8?'te':m.stress>=5?'ta':'tg'}">${t('stressLevel')||'S'} ${m.stress}/10</span>
+          ${(m.moods||[]).map(mood=>`<span class="tag tv">${mood}</span>`).join('')}
+        </div>
+        ${m.trigger?`<div class="le-note">${m.trigger}</div>`:''}
+      </div>
+      <button class="btn bdel" onclick="delEntry('mood','${m._id}')">${t('delete')||'删'}</button>
+    </div>
+  `).join('');
+  const total=moodCache.length;
+  const avgS=total?(moodCache.reduce((s,e)=>s+e.stress,0)/total).toFixed(1):'—';
+  document.getElementById('mood-stats').innerHTML=`
+    <div class="sc"><div class="sn">${total}</div><div class="sl">${t('totalEntries')}</div></div>
+    <div class="sc"><div class="sn e">${avgS}</div><div class="sl">${t('avgStress')}</div></div>
+  `;
+}
+
+// ══════════════════════════════════
+// ADHD
+// ══════════════════════════════════
+let adhdCache = {};
+window.setAdhdMode = function(mode) {
+  adhdMode = mode;
+  document.getElementById('adhd-simple').style.display = mode==='simple'?'block':'none';
+  document.getElementById('adhd-full').style.display = mode==='full'?'block':'none';
+  document.getElementById('adhd-simple-btn').classList.toggle('on', mode==='simple');
+  document.getElementById('adhd-full-btn').classList.toggle('on', mode==='full');
+};
+window.addAdhd = async function() {
+  const today = todayStr();
+  const entry = {
+    date: today, mode: adhdMode,
+    anchor: fd.anchor||null, startTime: fd.start_time||null,
+    energy: fd.adhd_energy||null, brainfog: fd.brainfog||null,
+    fog_times: fd.adhd_fog||[],
+    sleep: nv.adhd_sleep, meals: nv.adhd_meals,
+    exercise: fd.exercise||null, rsd: fd.rsd||null,
+    rsdNote: document.getElementById('adhd-rsd-note')?.value||'',
+    obstacle: document.getElementById('adhd-obstacle')?.value||'',
+    adjustment: document.getElementById('adhd-adjust')?.value||'',
+  };
+  await fsSave(['adhd', today], entry);
+  clearForm();
+  ['adhd-rsd-note','adhd-obstacle','adhd-adjust'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const rsdQ = document.getElementById('rsd-q'); if(rsdQ) rsdQ.style.display='none';
+  await loadAndRenderAdhd();
+  toast('✓');
+};
+async function loadAndRenderAdhd() {
+  const snap = await getDocs(collection(db,'users',currentUser.uid,'adhd'));
+  adhdCache = {};
+  snap.docs.forEach(d => { adhdCache[d.id] = { _id: d.id, ...d.data() }; });
+  renderAdhd();
+}
+function renderAdhd() {
+  const logs = Object.entries(adhdCache).sort((a,b)=>b[0].localeCompare(a[0]));
+  const el=document.getElementById('adhd-list'); if(!el) return;
+  if(!logs.length){el.innerHTML=`<div class="empty">—</div>`;return;}
+  el.innerHTML=logs.slice(0,14).map(([date,e])=>`
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${date}</div>
+        <div class="le-body">
+          <span class="tag ${e.anchor==='yes'?'tg':e.anchor==='no'?'te':'tn'}">${e.anchor==='yes'?t('completed'):e.anchor==='no'?t('notCompleted'):t('notSet')}</span>
+          ${e.energy?`<span class="tag ${e.energy>=7?'tg':e.energy>=4?'ta':'te'}">${t('energyScale')||'E'} ${e.energy}/10</span>`:''}
+          ${e.rsd==='yes'?`<span class="tag te">RSD</span>`:''}
+        </div>
+        ${e.obstacle?`<div class="le-note">${e.obstacle}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+  const total=logs.length;
+  const anchorRate=total?Math.round(logs.filter(([,e])=>e.anchor==='yes').length/total*100):0;
+  const avgE=total?(logs.reduce((s,[,e])=>s+(e.energy||0),0)/total).toFixed(1):'—';
+  const rsdDays=logs.filter(([,e])=>e.rsd==='yes').length;
+  document.getElementById('adhd-stats').innerHTML=`
+    <div class="sc"><div class="sn">${total}</div><div class="sl">${t('recordDays')}</div></div>
+    <div class="sc"><div class="sn g">${anchorRate}%</div><div class="sl">${t('anchorRate')}</div></div>
+    <div class="sc"><div class="sn a">${avgE}</div><div class="sl">${t('avgEnergy')}</div></div>
+    <div class="sc"><div class="sn e">${rsdDays}</div><div class="sl">${t('rsdDays')}</div></div>
+  `;
+}
+
+// ══════════════════════════════════
+// FOCUS TIMER
+// ══════════════════════════════════
+let focusCache = [];
+function updateTimerLabel() {
+  const map = { focus: t('focusMode'), short: t('shortMode'), long: t('longMode') };
+  const lbl = document.getElementById('timer-mode-lbl');
+  if (lbl) lbl.textContent = map[timerMode] || '';
+  const stateMap = { idle: t('idle'), focusing: t('focusing'), resting: t('resting'), done: t('done') };
+}
+window.setTimerMode = function(mode) {
+  resetTimer(); timerMode = mode;
+  const map = { focus:1500, short:300, long:1200 };
+  timerSec = timerTotal = map[mode];
+  updateTimerLabel(); updateTimerDisplay();
+};
+window.toggleTimer = function() {
+  if (timerRunning) {
+    clearInterval(timerInterval); timerRunning = false;
+    document.getElementById('timer-start-btn').textContent = t('start');
+    document.getElementById('focus-state-lbl').textContent = t('idle');
+  } else {
+    timerRunning = true;
+    document.getElementById('timer-start-btn').textContent = t('reset');
+    document.getElementById('focus-state-lbl').textContent = timerMode==='focus'?t('focusing'):t('resting');
+    timerInterval = setInterval(async () => {
+      timerSec--;
+      updateTimerDisplay();
+      if (timerSec <= 0) {
+        clearInterval(timerInterval); timerRunning = false;
+        if (timerMode === 'focus') {
+          const entry = { date: todayStr(), time: new Date().toLocaleTimeString(), durationMin: 25 };
+          await fsAdd('focus', entry);
+          await loadAndRenderFocus();
+          toast('✓ ' + t('done'));
+        }
+        document.getElementById('focus-state-lbl').textContent = t('done');
+        document.getElementById('timer-start-btn').textContent = t('start');
+      }
+    }, 1000);
+  }
+};
+window.resetTimer = function() {
+  clearInterval(timerInterval); timerRunning = false;
+  timerSec = timerTotal; updateTimerDisplay();
+  document.getElementById('timer-start-btn').textContent = t('start');
+  document.getElementById('focus-state-lbl').textContent = t('idle');
+};
+function updateTimerDisplay() {
+  const m=Math.floor(timerSec/60), s=timerSec%60;
+  document.getElementById('timer-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('progbar').style.width=`${((timerTotal-timerSec)/timerTotal)*100}%`;
+}
+async function loadAndRenderFocus() {
+  focusCache = await fsGetAll('focus');
+  focusCache.sort((a,b)=>b.date.localeCompare(a.date));
+  renderFocus();
+}
+function renderFocus() {
+  const today=todayStr();
+  const todaySess=focusCache.filter(f=>f.date===today).length;
+  document.getElementById('focus-stats').innerHTML=`
+    <div class="sc"><div class="sn">${todaySess}</div><div class="sl">${t('todaySessions')}</div></div>
+    <div class="sc"><div class="sn a">${todaySess*25}</div><div class="sl">${t('todayMinutes')}</div></div>
+    <div class="sc"><div class="sn">${focusCache.length}</div><div class="sl">${t('totalSessions')}</div></div>
+  `;
+  const el=document.getElementById('focus-list');
+  if(!focusCache.length){el.innerHTML=`<div class="empty">—</div>`;return;}
+  el.innerHTML=focusCache.slice(0,10).map(f=>`
+    <div class="le"><div class="le-body"><span class="tag tbl">✓ 25min</span> <span style="font-size:10px;color:var(--ink3)">${f.date} ${f.time}</span></div></div>
+  `).join('');
+}
+
+// ══════════════════════════════════
+// SCHEDULE
+// ══════════════════════════════════
+let scheduleCache = [];
+window.addSchedule = async function() {
+  const name=document.getElementById('sch-name').value.trim();
+  if(!name){toast('—');return;}
+  const entry={day:+document.getElementById('sch-day').value,slot:+document.getElementById('sch-slot').value,type:document.getElementById('sch-type').value,name};
+  await fsAdd('schedule',entry);
+  document.getElementById('sch-name').value='';
+  await loadAndRenderSchedule();
+  toast('✓');
+};
+async function loadAndRenderSchedule() {
+  scheduleCache = await fsGetAll('schedule');
+  renderScheduleGrid();
+}
+function renderScheduleGrid() {
+  const card=document.getElementById('schedule-grid-card'); if(!card) return;
+  const days=t('weekdays')||['Mo','Tu','We','Th','Fr','Sa','Su'];
+  const slots=t('timeSlots')||['06–09','09–12','12–18','18–22','22–00'];
+  let html=`<div class="card-lbl" data-i18n="weeklySchedule">${t('weeklySchedule')}</div><div class="sg">`;
+  html+='<div class="sgc sgh"></div>'+days.map(d=>`<div class="sgc sgh">${d}</div>`).join('');
+  slots.forEach((slot,si)=>{
+    html+=`<div class="sgc" style="color:var(--ink3);font-size:8px;">${slot.split(' ')[0]}</div>`;
+    for(let di=0;di<7;di++){
+      const evs=scheduleCache.filter(e=>e.day===di&&e.slot===si);
+      html+=`<div class="sgc">${evs.map(e=>`<div class="sgev ${e.type}" ondblclick="delSchedule('${e._id}')">${e.name}</div>`).join('')}</div>`;
+    }
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window.delSchedule = async function(id) {
+  await fsDel('schedule',id);
+  await loadAndRenderSchedule();
+};
+
+// ══════════════════════════════════
+// FOOD
+// ══════════════════════════════════
+let foodCache = [];
+window.addFood = async function() {
+  const content=document.getElementById('fo-content').value.trim();
+  if(!content) return;
+  const dayIdx=+document.getElementById('fo-day').value;
+  const mealIdx=+document.getElementById('fo-meal').value;
+  const days=t('weekdays')||[];
+  const meals=t('mealTimes')||[];
+  const day=days[dayIdx]||dayIdx, meal=meals[mealIdx]||mealIdx;
+  const key=`${dayIdx}_${mealIdx}`;
+  const existing=foodCache.find(f=>f.key===key);
+  if(existing){await fsDel('food',existing._id);}
+  await fsAdd('food',{key,day,meal,content});
+  document.getElementById('fo-content').value='';
+  await loadAndRenderFood();
+  toast('✓');
+};
+async function loadAndRenderFood() {
+  foodCache = await fsGetAll('food');
+  renderFoodGrid();
+}
+function renderFoodGrid() {
+  const card=document.getElementById('food-grid-card'); if(!card) return;
+  const days=t('weekdays')||[];
+  const meals=t('mealTimes')||[];
+  let html=`<div class="card-lbl">${t('mealPlan')}</div><div class="fgrid">`;
+  html+='<div class="fgc fgh"></div>'+meals.map(m=>`<div class="fgc fgh">${m}</div>`).join('');
+  days.forEach((d,di)=>{
+    html+=`<div class="fgc fgday">${d}</div>`;
+    meals.forEach((_,mi)=>{
+      const f=foodCache.find(x=>x.key===`${di}_${mi}`);
+      html+=`<div class="fgc ${f?'fgval':''}">${f?f.content:'—'}</div>`;
+    });
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+
+// ══════════════════════════════════
+// ENEMY
+// ══════════════════════════════════
+let enemyCache = [];
+window.addEnemy = async function() {
+  const name=document.getElementById('en-name').value.trim();
+  if(!name) return;
+  const entry={date:todayStr(),name,relation:document.getElementById('en-rel').value,threat:+document.getElementById('en-threat').value,reason:document.getElementById('en-reason').value,plan:document.getElementById('en-plan').value};
+  await fsAdd('enemy',entry);
+  ['en-name','en-reason','en-plan'].forEach(id=>document.getElementById(id).value='');
+  await loadAndRenderEnemy();
+  toast('✓');
+};
+async function loadAndRenderEnemy() {
+  enemyCache = await fsGetAll('enemy');
+  enemyCache.sort((a,b)=>b.threat-a.threat);
+  renderEnemy();
+}
+function renderEnemy() {
+  const el=document.getElementById('enemy-list'); if(!el) return;
+  if(!enemyCache.length){el.innerHTML=`<div class="empty">—</div>`;return;}
+  el.innerHTML=enemyCache.map(e=>`
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${e.date} · ${e.relation}</div>
+        <div class="le-body" style="font-size:13px;font-weight:500;margin-bottom:4px;">${e.name}</div>
+        <div class="threat-row">${Array(5).fill(0).map((_,i)=>`<div class="tblock ${i<e.threat?'on':''}"></div>`).join('')}</div>
+        <div><span class="tag te">${t('threatLevel')||'T'} ${e.threat}/5</span></div>
+        ${e.reason?`<div class="le-note">${e.reason}</div>`:''}
+        ${e.plan?`<div class="le-note">${e.plan}</div>`:''}
+      </div>
+      <button class="btn bdel" onclick="delEntry('enemy','${e._id}')">${t('delete')||'删'}</button>
+    </div>
+  `).join('');
+  const maxT=enemyCache.length?Math.max(...enemyCache.map(e=>e.threat)):0;
+  document.getElementById('enemy-stats').innerHTML=`
+    <div class="sc"><div class="sn e">${enemyCache.length}</div><div class="sl">${t('activeEnemies')}</div></div>
+    <div class="sc"><div class="sn e">${maxT}/5</div><div class="sl">${t('maxThreat')}</div></div>
+    <div class="sc"><div class="sn">${enemyCache.filter(e=>e.threat>=4).length}</div><div class="sl">${t('highRisk')}</div></div>
+  `;
+}
+
+// ══════════════════════════════════
+// OFFENSE
+// ══════════════════════════════════
+let offenseCache = [];
+window.addOffense = async function() {
+  const who=document.getElementById('of-who').value.trim();
+  const desc=document.getElementById('of-desc').value.trim();
+  if(!who||!desc) return;
+  const entry={date:document.getElementById('of-date').value,who,level:+document.getElementById('of-level').value,desc};
+  await fsAdd('offense',entry);
+  ['of-who','of-desc'].forEach(id=>document.getElementById(id).value='');
+  await loadAndRenderOffense();
+  toast('✓');
+};
+async function loadAndRenderOffense() {
+  offenseCache = await fsGetAll('offense');
+  offenseCache.sort((a,b)=>b.date.localeCompare(a.date));
+  renderOffense();
+}
+function renderOffense() {
+  const el=document.getElementById('offense-list'); if(!el) return;
+  if(!offenseCache.length){el.innerHTML=`<div class="empty">—</div>`;return;}
+  el.innerHTML=offenseCache.slice(0,20).map(e=>`
+    <div class="le">
+      <div style="flex:1">
+        <div class="le-meta">${e.date}</div>
+        <div class="le-body"><b>${e.who}</b> <span class="tag te">${t('severity')||'L'} ${e.level}/4</span></div>
+        <div class="le-note">${e.desc}</div>
+      </div>
+      <button class="btn bdel" onclick="delEntry('offense','${e._id}')">${t('delete')||'删'}</button>
+    </div>
+  `).join('');
+  const counts={};
+  offenseCache.forEach(e=>{counts[e.who]=(counts[e.who]||0)+1;});
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,1);
+  document.getElementById('offense-stats').innerHTML=`
+    <div class="sc"><div class="sn e">${offenseCache.length}</div><div class="sl">${t('archivedEvents')}</div></div>
+    <div class="sc"><div class="sn">${Object.keys(counts).length}</div><div class="sl">${t('peopleInvolved')}</div></div>
+    ${top.length?`<div class="sc"><div class="sn e" style="font-size:14px;">${top[0][0]}</div><div class="sl">${t('mostFrequent')} (${top[0][1]})</div></div>`:''}
+  `;
+}
+
+// ══════════════════════════════════
+// GENERIC DELETE
+// ══════════════════════════════════
+window.delEntry = async function(col, id) {
+  await fsDel(col, id);
+  const loaders = {
+    cycle: loadAndRenderCycle, poop: loadAndRenderPoop, sleep: loadAndRenderSleep,
+    mood: loadAndRenderMood, focus: loadAndRenderFocus, enemy: loadAndRenderEnemy, offense: loadAndRenderOffense
+  };
+  if (loaders[col]) await loaders[col]();
+};
+
+// ══════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════
+function renderDashboard() {
+  const now = new Date();
+  const dayNames = t('weekdays') || ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  const nativeDays = {
+    zh:['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+    en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    fr:['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+    ar:['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],
+    fa:['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'],
+  };
+  document.getElementById('dash-datestr').textContent =
+    `${now.getMonth()+1}/${now.getDate()} ${(nativeDays[currentLang]||nativeDays.en)[now.getDay()]}`;
+
+  const today = todayStr();
+  const todayPoops = poopCache.filter(p => p.date === today).length;
+  const todayFocus = focusCache.filter(f => f.date === today).length;
+  const todayAdhd = adhdCache[today];
+  const lastCycle = cycleCache.filter(c => c.type === 'period')[0];
+
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="sc"><div class="sn g">${todayPoops}</div><div class="sl">${t('bowelLog')}</div></div>
+    <div class="sc"><div class="sn" style="color:var(--bl)">${todayFocus}</div><div class="sl">${t('focusTimer')}</div></div>
+    <div class="sc"><div class="sn a">${todayAdhd?.energy||'—'}</div><div class="sl">${t('avgEnergy')}</div></div>
+    <div class="sc"><div class="sn e">${enemyCache.length}</div><div class="sl">${t('activeEnemies')}</div></div>
+  `;
+
+  const last7 = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    last7.push({ day: d.getDate(), adhd: adhdCache[k] });
+  }
+
+  document.getElementById('dash-grid').innerHTML = `
+    <div class="dash-card">
+      <div class="dash-card-title"><div class="dash-dot"></div>${t('adhdLog')||'ADHD'}</div>
+      <div class="mini-bars">
+        ${last7.map(({day,adhd})=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">
+          <div style="width:100%;height:${adhd?.energy?(adhd.energy/10*40)+'px':'2px'};background:${!adhd?'var(--b1)':adhd.energy>=7?'var(--g)':adhd.energy>=4?'var(--a)':'var(--e)'};border-radius:2px 2px 0 0;"></div>
+          <div style="font-size:8px;color:var(--ink3);">${day}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-title"><div class="dash-dot" style="background:var(--r)"></div>${t('cycleTracker')}</div>
+      ${lastCycle?`<div style="font-size:11px;color:var(--ink2);">${lastCycle.date}</div>`:`<div style="font-size:11px;color:var(--ink3);">—</div>`}
+      <div style="font-size:10px;color:var(--ink3);margin-top:4px;">${cycleCache.filter(c=>c.type==='period').length} ${t('periodDays')}</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-title"><div class="dash-dot" style="background:var(--e)"></div>${t('enemyList')}</div>
+      <div style="font-size:11px;color:var(--ink2);">${t('activeEnemies')}: <b>${enemyCache.length}</b></div>
+      <div style="font-size:11px;color:var(--ink2);margin-top:3px;">${t('archivedEvents')}: <b>${offenseCache.length}</b></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-title"><div class="dash-dot" style="background:var(--g)"></div>${t('focusTimer')}</div>
+      <div style="font-size:22px;font-family:var(--serif);color:var(--v);">${todayFocus}</div>
+      <div style="font-size:10px;color:var(--ink3);">${todayFocus*25} ${t('todayMinutes')?.split(' ').pop()||'min'}</div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════
+async function renderAll() {
+  await Promise.all([
+    loadAndRenderCycle(), loadAndRenderPoop(), loadAndRenderSleep(),
+    loadAndRenderMood(), loadAndRenderAdhd(), loadAndRenderFocus(),
+    loadAndRenderSchedule(), loadAndRenderFood(),
+    loadAndRenderEnemy(), loadAndRenderOffense(),
+  ]);
+  renderDashboard();
+  updateTimerDisplay();
+  updateTimerLabel();
+}
+
+// ══════════════════════════════════
+// TOAST
+// ══════════════════════════════════
+let tt;
+window.toast = function(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2000);
+};
+
+// ══════════════════════════════════
+// BOOT
+// ══════════════════════════════════
+// Show lang screen if first time, otherwise login
+if (!localStorage.getItem('fsp_lang')) {
+  showScreen('lang');
+} else {
+  applyLang();
+  showScreen('login');
+}
+</script>
+</body>
+</html>
